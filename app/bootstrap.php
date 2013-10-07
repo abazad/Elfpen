@@ -34,7 +34,7 @@ $app->register(new SessionServiceProvider());
 /* Data & callback */
 $app['data'] = array(
 	'title' => 'Elf-Pen Default Admin Panel for Tolkien Static Web Generator',
-	'footer' => 'Copyright © 2013, Glend Maatita ®'
+	'footer' => '&copy; 2013, Glend Maatita 2013'
 );
 
 
@@ -51,16 +51,42 @@ $app['security.firewalls'] = array(
 				)
 			)
 	);
-
 	
 $app['debug'] = true;
 
 /**
- * Application Routes
+ * Routes
+ *
+ * +--------------------------+------------------------------+-----------------------------+
+ * | Method                   | Path                         | Description                 |
+ * +--------------------------+------------------------------+-----------------------------+
+ * | GET                      | /login                       | Admin panel login           |
+ * | GET                      | /admin/logout                | Logout                      |
+ * | GET                      | /admin/dashboard             | Dashboard                   |
+ * | GET                      | /admin/posts                 | List of posts               |
+ * | GET                      | /admin/posts/new             | Add New post                |
+ * | POST                     | /admin/posts/new             | Save new post               |
+ * | GET                      | /admin/post/{id}/edit        | Edit a post                 |
+ * | POST                     | /admin/post/{id}/edit        | Update post                 |
+ * | DELETE                   | /admin/post/{id}/delete      | Delete a post               |
+ * | GET                      | /admin/pages/new             | Add New page                |
+ * | POST                     | /admin/pages/new             | Save new page               |
+ * | GET                      | /admin/page/{id}/edit        | Edit a page                 |
+ * | POST                     | /admin/page/{id}/edit        | Update page                 |
+ * | DELETE                   | /admin/page/{id}/delete      | Delete a page               |
+ * | GET                      | /admin/authors               | List of authors             |
+ * | GET                      | /admin/authors/new           | Add new author              |
+ * | POST                     | /admin/authors/new           | Save author                 |
+ * | GET                      | /admin/author/{id}/edit      | Edit a author               |
+ * | POST                     | /admin/author/{id}/edit      | Update author               |
+ * | DELETE                   | /admin/author/{id}/delete    | Delete a author             |
+ * | GET                      | /admin/setting               | Edit Setting                |
+ * | POST                     | /admin/setting               | Update Setting              |
+ * +--------------------------+------------------------------+-----------------------------+
  */
 
 $app->get('/', function(Request $request) use($app) {
-	return $app->redirect('/admin/events/grab');
+
 });
 
 /** Login **/
@@ -69,6 +95,58 @@ $app->get('/login', function(Request $request) use($app) {
         'error'         => $app['security.last_error']($request),
         'last_username' => $app['session']->get('_security.last_username'),
     ));
+});
+
+$app->get('/admin/posts', function(Request $request) use($app) {
+
+});
+
+$app->match('/admin/posts/new', function(Request $request) use($app) {
+
+});
+
+$app->match('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
+
+});
+
+$app->get('/admin/post/{id}/delete', function(Request $request, $id) use($app) {
+
+});
+
+$app->get('/admin/pages/', function(Request $request) use($app) {
+
+});
+
+$app->match('/admin/pages/new', function(Request $request) use($app) {
+
+});
+
+$app->match('/admin/page/{id}/edit', function(Request $request, $id) use($app) {
+
+});
+
+$app->get('/admin/page/{id}/delete', function(Request $request, $id) use($app) {
+
+});
+
+$app->get('/admin/authors', function(Request $request) use($app) {
+
+});
+
+$app->match('/admin/authors/new', function(Request $request) use($app) {
+
+});
+
+$app->match('/admin/author/{id}/edit', function(Request $request, $id) use($app) {
+
+});
+
+$app->get('/admin/author/{id}/delete', function(Request $request, $id) use($app) {
+
+});
+
+$app->match('/admin/setting', function(Request $request, $id) use($app) {
+
 });
 
 $app->run();
