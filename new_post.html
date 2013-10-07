@@ -6,6 +6,9 @@
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
     <link href="assets/styles.css" rel="stylesheet" media="screen">
+    
+    <link href="assets/bootstrap-markdown.min.css" rel="stylesheet" media="screen">
+
     <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="vendors/flot/excanvas.min.js"></script><![endif]-->
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -123,7 +126,7 @@
                       <div class="control-group">
                         <label class="control-label" for="typeahead">Post's Content </label>
                         <div class="controls">
-                          <textarea class="input-xlarge textarea" placeholder="Enter Signature ..." style="width: 600px; height: 200px"></textarea>
+                          <textarea class="input-xlarge textarea" id="post-content" placeholder="Enter content ..." style="width: 700px; height: 560px"></textarea>
                         </div>
                       </div>
                       <div class="control-group">
@@ -156,19 +159,16 @@
     </div>
     <!--/.fluid-container-->
     <link href="vendors/uniform.default.css" rel="stylesheet" media="screen">
-    <link href="vendors/wysiwyg/bootstrap-wysihtml5.css" rel="stylesheet" media="screen">
     <script src="vendors/jquery-1.9.1.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="vendors/jquery.uniform.min.js"></script>
-    <script src="vendors/chosen.jquery.min.js"></script>
-    <script src="vendors/wysiwyg/wysihtml5-0.3.0.js"></script>
-    <script src="vendors/wysiwyg/bootstrap-wysihtml5.js"></script>
     <script src="assets/scripts.js"></script>
+    <script src="assets/bootstrap-markdown.js"></script>
     <script>
     $(function() {
+        $("#post-content").markdown({autofocus:false,savable:false,width: 700, height: 600})
         $(".uniform_on").uniform();
         $(".chzn-select").chosen();
-        $('.textarea').wysihtml5();
     });
     </script>
   </body>
