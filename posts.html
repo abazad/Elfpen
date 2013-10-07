@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Forms</title>
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="assets/styles.css" rel="stylesheet" media="screen">
+    <link href="assets/DT_bootstrap.css" rel="stylesheet" media="screen">
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="vendors/flot/excanvas.min.js"></script><![endif]-->
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Elf-Pen Panel</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li class="dropdown">
+                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> Glend Maatita <i class="caret"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a tabindex="-1" href="#">Profile</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a tabindex="-1" href="login.html">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <ul class="nav">
+              <li class="active">
+                <a href="#">Dashboard</a>
+              </li>
+              <li>
+                <a href="#">New Post</a>
+              </li>
+              <li>
+                <a href="#">View Site</a>
+              </li>
+            </ul>
+          </div>
+          <!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3" id="sidebar">
+          <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
+            <li class="active">
+              <a href="index.html"><i class="icon-chevron-right"></i> Dashboard</a>
+            </li>
+            <li>
+              <a href="calendar.html"><i class="icon-chevron-right"></i> Posts</a>
+            </li>
+            <li>
+              <a href="stats.html"><i class="icon-chevron-right"></i> Pages</a>
+            </li>
+            <li>
+              <a href="form.html"><i class="icon-chevron-right"></i> Users</a>
+            </li>
+            <li>
+              <a href="form.html"><i class="icon-chevron-right"></i> Settings</a>
+            </li>
+          </ul>
+        </div>
+        <!--/span-->
+        <div class="span9" id="content">
+          <!-- Content here -->          
+          <div class="row-fluid">
+            <!-- block -->
+            <div class="block">
+              <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left">All Posts - <a class="label label-inverse">New Post</a></div>
+              </div>
+              <div class="block-content collapse in">
+                <div class="span12">                  
+                  <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="example">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Categories</th>
+                        <th>Author</th>
+                        <th>Publish Date</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="odd gradeX">
+                        <td><a href="#">Introduction to Rails Part I</a></td>
+                        <td>Ruby . Rails . Programming</td>
+                        <td>Glend Maatita</td>
+                        <td>20013/06/15</td>
+                        <td>
+                          <a href="#" class="label label-info">edit</a>
+                          <a href="#" class="label label-important">delete</a>
+                          <a href="#" class="label label-warning">view</a>
+                        </td>
+                      </tr>
+                      <tr class="even gradeC">
+                        <td><a href="#">Virtual Machine with Vagrant</a></td>
+                        <td>Ruby . Tips & Trick</td>
+                        <td>Glend Maatita</td>
+                        <td>20013/06/15</td>
+                        <td>
+                          <a href="#" class="label label-info">edit</a>
+                          <a href="#" class="label label-important">delete</a>
+                          <a href="#" class="label label-warning">view</a>
+                        </td>
+                      </tr>
+                      <tr class="odd gradeA">
+                        <td><a href="#">Kohana Way - Create a Controller</a></td>
+                        <td>PHP . Framework . Programming</td>
+                        <td>Eko SW</td>
+                        <td>20013/06/15</td>
+                        <td>
+                          <a href="#" class="label label-info">edit</a>
+                          <a href="#" class="label label-important">delete</a>
+                          <a href="#" class="label label-warning">view</a>
+                        </td>
+                      </tr>
+                      <tr class="even gradeA">
+                        <td><a href="#">How to Create Responsive Templates</a></td>
+                        <td>Front End . CSS</td>
+                        <td>Akhyar Amarullah</td>
+                        <td>20013/06/15</td>
+                        <td>
+                          <a href="#" class="label label-info">edit</a>
+                          <a href="#" class="label label-important">delete</a>
+                          <a href="#" class="label label-warning">view</a>
+                        </td>
+                      </tr>
+                      <tr class="odd gradeA">
+                        <td><a href="#">Build E-Commerce with CodeIgniter</a></td>
+                        <td>PHP . Tutorial . Programming</td>
+                        <td>Akhyar Amarullah</td>
+                        <td>20013/06/15</td>
+                        <td>
+                          <a href="#" class="label label-info">edit</a>
+                          <a href="#" class="label label-important">delete</a>
+                          <a href="#" class="label label-warning">view</a>
+                        </td>
+                      </tr>
+                      <tr class="even gradeA">
+                        <td><a href="#">Dive to Wordpress</a></td>
+                        <td>PHP . CMS</td>
+                        <td>Glend Maatita</td>
+                        <td>20013/06/15</td>
+                        <td>
+                          <a href="#" class="label label-info">edit</a>
+                          <a href="#" class="label label-important">delete</a>
+                          <a href="#" class="label label-warning">view</a>
+                        </td>
+                      </tr>
+                      <tr class="gradeA">
+                        <td><a href="#">Composer Explained</a></td>
+                        <td>PHP . Tips & Trick</td>
+                        <td>Eko SW</td>
+                        <td>20013/06/15</td>
+                        <td>
+                          <a href="#" class="label label-info">edit</a>
+                          <a href="#" class="label label-important">delete</a>
+                          <a href="#" class="label label-warning">view</a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- /block -->
+          </div>
+        </div>
+      </div>
+      <hr>
+      <footer>
+        <p>&copy; Glend Maatita 2013</p>
+      </footer>
+    </div>
+    <!--/.fluid-container-->
+    <script src="vendors/jquery-1.9.1.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendors/datatables/js/jquery.dataTables.min.js"></script>
+
+
+    <script src="assets/scripts.js"></script>
+    <script src="assets/DT_bootstrap.js"></script>
+    <script>
+    $(function() {
+        
+    });
+    </script>
+  </body>
+</html>
