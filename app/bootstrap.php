@@ -16,7 +16,7 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 
 /** Tolkien Namespace **/
-use Tolkien\Factories\BuildFactory;
+use Tolkien\Facades\Tolkien as TolkienFacade;
 
 /* Initialiaze */
 $app = new  Silex\Application();
@@ -45,10 +45,10 @@ $app['data'] = array(
 );
 
 $app['blog_name'] = 'blog';
-
 $app['config'] = Yaml::parse(file_get_contents(CONFIG));
+/** end of data **/
 
-/** Get Authors **/
+/** Authentication & Authorization **/
 $authors = Yaml::parse(file_get_contents($app['dir_blog'] . '/author.yml'));
 $authors_parse = array();
 foreach ($authors as $key => $value) {
@@ -66,6 +66,7 @@ $app['security.firewalls'] = array(
 		'users' => $authors_parse			
 		)
 	);
+/** End of authentication **/
 	
 $app['debug'] = true;
 
@@ -117,7 +118,7 @@ $app->get('/login', function(Request $request) use($app) {
 });
 
 $app->get('/admin/posts', function(Request $request) use($app) {
-
+	$app['posts'] = TolkienFacade::build($app['blog_name'], 'post');
 
 });
 
