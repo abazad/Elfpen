@@ -1619,12 +1619,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/glendmaatita/Tolkien.git",
-                "reference": "2bd171a1049e0cb47e05a6f7d22e35f87733bfb3"
+                "reference": "98024ed8848e992ed7fea1c9674a509ea65c96c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glendmaatita/Tolkien/zipball/2bd171a1049e0cb47e05a6f7d22e35f87733bfb3",
-                "reference": "2bd171a1049e0cb47e05a6f7d22e35f87733bfb3",
+                "url": "https://api.github.com/repos/glendmaatita/Tolkien/zipball/98024ed8848e992ed7fea1c9674a509ea65c96c4",
+                "reference": "98024ed8848e992ed7fea1c9674a509ea65c96c4",
                 "shasum": ""
             },
             "require": {
@@ -1656,7 +1656,7 @@
                 "source": "https://github.com/glendmaatita/Tolkien/tree/master",
                 "issues": "https://github.com/glendmaatita/Tolkien/issues"
             },
-            "time": "2013-10-09 10:35:35"
+            "time": "2013-10-09 11:20:32"
         },
         {
             "name": "twig/twig",

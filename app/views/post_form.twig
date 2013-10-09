@@ -1,175 +1,70 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Forms</title>
-    <!-- Bootstrap -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-    <link href="assets/styles.css" rel="stylesheet" media="screen">
-    
-    <link href="assets/bootstrap-markdown.min.css" rel="stylesheet" media="screen">
-
-    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="vendors/flot/excanvas.min.js"></script><![endif]-->
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <script src="vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-  </head>
-  <body>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">Elf-Pen Panel</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav pull-right">
-              <li class="dropdown">
-                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> Glend Maatita <i class="caret"></i>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a tabindex="-1" href="#">Profile</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a tabindex="-1" href="login.html">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <ul class="nav">
-              <li class="active">
-                <a href="#">Dashboard</a>
-              </li>
-              <li>
-                <a href="#">New Post</a>
-              </li>
-              <li>
-                <a href="#">View Site</a>
-              </li>
-            </ul>
-          </div>
-          <!--/.nav-collapse -->
-        </div>
-      </div>
+<div class="row-fluid">
+  <!-- block -->
+  <div class="block">
+    <div class="navbar navbar-inner block-header">
+      <div class="muted pull-left">Posts</div>
     </div>
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3" id="sidebar">
-          <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
-            <li class="active">
-              <a href="index.html"><i class="icon-chevron-right"></i> Dashboard</a>
-            </li>
-            <li>
-              <a href="calendar.html"><i class="icon-chevron-right"></i> Posts</a>
-            </li>
-            <li>
-              <a href="stats.html"><i class="icon-chevron-right"></i> Pages</a>
-            </li>
-            <li>
-              <a href="form.html"><i class="icon-chevron-right"></i> Users</a>
-            </li>
-            <li>
-              <a href="form.html"><i class="icon-chevron-right"></i> Settings</a>
-            </li>
-          </ul>
-        </div>
-        <!--/span-->
-        <div class="span9" id="content">          
-          <div class="row-fluid">
-            <!-- block -->
-            <div class="block">
-              <div class="navbar navbar-inner block-header">
-                <div class="muted pull-left">Posts</div>
-              </div>
-              <div class="block-content collapse in">
-                <div class="span12">
-                  <form class="form-horizontal">
-                    <fieldset>
-                      <legend>New Post</legend>
-                      <div class="alert alert-error">
-                        <button class="close" data-dismiss="alert">&times;</button>
-                        <strong>Error!</strong> This is a warning message.
-                      </div>
-                      <div class="alert alert-info">
-                        <button class="close" data-dismiss="alert">&times;</button>
-                        <strong>Success!</strong> This is a warning message.
-                      </div>
-                      <div class="control-group">
-                        <label class="control-label" for="typeahead">Title* </label>
-                        <div class="controls">
-                          <input type="text" class="span6" id="typeahead">
-                        </div>
-                      </div>
-                      <div class="control-group">
-                        <label class="control-label" for="typeahead">Categories* </label>
-                        <div class="controls">
-                          <label class="uniform">
-                            <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Notes
-                          </label>
-                          <label class="uniform">
-                            <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Tutorial
-                          </label>
-                          <label class="uniform">
-                            <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Programming
-                          </label>                          
-                        </div>
-                        <div class="controls">
-                          <input type="text" class="span6" id="typeahead">
-                          <p class="help-block">Other Categories. Fill with comma separated</p>
-                        </div>
-                      </div>
-                      <div class="control-group">
-                        <label class="control-label" for="typeahead">Post's Content </label>
-                        <div class="controls">
-                          <textarea class="input-xlarge textarea" id="post-content" placeholder="Enter content ..." style="width: 700px; height: 560px"></textarea>
-                        </div>
-                      </div>
-                      <div class="control-group">
-                        <label class="control-label" for="select01">Layout </label>
-                        <div class="controls">
-                          <select id="select01">
-                            <option>Layout 1</option>
-                            <option>Layout 2</option>
-                            <option>Layout 3</option>
-                          </select>
-                        </div>
-                      </div>                      
-                      <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <button type="reset" class="btn">Cancel</button>
-                      </div>
-                    </fieldset>
-                  </form>
-                </div>
+    <div class="block-content collapse in">
+      <div class="span12">
+        <form class="form-horizontal">
+          <fieldset>
+            <legend>New Post</legend>
+            <div class="alert alert-error">
+              <button class="close" data-dismiss="alert">&times;</button>
+              <strong>Error!</strong> This is a warning message.
+            </div>
+            <div class="alert alert-info">
+              <button class="close" data-dismiss="alert">&times;</button>
+              <strong>Success!</strong> This is a warning message.
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="typeahead">Title* </label>
+              <div class="controls">
+                <input type="text" class="span6" id="typeahead">
               </div>
             </div>
-            <!-- /block -->
-          </div>
-        </div>
+            <div class="control-group">
+              <label class="control-label" for="typeahead">Categories* </label>
+              <div class="controls">
+                <label class="uniform">
+                  <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Notes
+                </label>
+                <label class="uniform">
+                  <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Tutorial
+                </label>
+                <label class="uniform">
+                  <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Programming
+                </label>                          
+              </div>
+              <div class="controls">
+                <input type="text" class="span6" id="typeahead">
+                <p class="help-block">Other Categories. Fill with comma separated</p>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="typeahead">Post's Content </label>
+              <div class="controls">
+                <textarea class="input-xlarge textarea" id="post-content" placeholder="Enter content ..." style="width: 700px; height: 560px"></textarea>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="select01">Layout </label>
+              <div class="controls">
+                <select id="select01">
+                  <option>Layout 1</option>
+                  <option>Layout 2</option>
+                  <option>Layout 3</option>
+                </select>
+              </div>
+            </div>                      
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="reset" class="btn">Cancel</button>
+            </div>
+          </fieldset>
+        </form>
       </div>
-      <hr>
-      <footer>
-        <p>&copy; Glend Maatita 2013</p>
-      </footer>
     </div>
-    <!--/.fluid-container-->
-    <link href="vendors/uniform.default.css" rel="stylesheet" media="screen">
-    <script src="vendors/jquery-1.9.1.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="vendors/jquery.uniform.min.js"></script>
-    <script src="assets/scripts.js"></script>
-    <script src="assets/bootstrap-markdown.js"></script>
-    <script>
-    $(function() {
-        $("#post-content").markdown({autofocus:false,savable:false,width: 700, height: 600})
-        $(".uniform_on").uniform();
-        $(".chzn-select").chosen();
-    });
-    </script>
-  </body>
-</html>
+  </div>
+  <!-- /block -->
+</div>

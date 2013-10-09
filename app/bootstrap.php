@@ -35,7 +35,7 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new SessionServiceProvider());
 
 /** Basic Configuration **/
-$app['dir_blog'] = dirname(__DIR__) .  '/blog';
+$app['dir_blog'] = realpath(dirname(__DIR__) .  '/blog');
 define('CONFIG', $app['dir_blog'] . '/config.yml');
 
 /* Data & callback */
@@ -44,7 +44,7 @@ $app['data'] = array(
 	'footer' => '&copy; 2013, Glend Maatita 2013'
 );
 
-$app['blog_name'] = 'blog';
+//$app['blog_name'] = 'blog';
 $app['config'] = Yaml::parse(file_get_contents(CONFIG));
 /** end of data **/
 
@@ -118,12 +118,14 @@ $app->get('/login', function(Request $request) use($app) {
 });
 
 $app->get('/admin/posts', function(Request $request) use($app) {
-	$app['posts'] = TolkienFacade::build($app['blog_name'], 'post');
-
+	$app['posts'] = TolkienFacade::build($app['dir_blog'], 'post');
+	return $app['twig']->render('posts.twig', $app['data']);
 });
 
 $app->match('/admin/posts/new', function(Request $request) use($app) {
-
+	$form = $app['form.factory']->createBuilder('form') 
+		->add('title', 'text', array('constraints' => new Assert\NotBlank()))
+		->add('body', 'textarea', array('constraints' => new Assert\NotBlank()))
 });
 
 $app->match('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
@@ -135,7 +137,8 @@ $app->get('/admin/post/{id}/delete', function(Request $request, $id) use($app) {
 });
 
 $app->get('/admin/pages/', function(Request $request) use($app) {
-
+	$app['pages'] = TolkienFacade::build($app['dir_blog'], 'page');
+	return $app['twig']->render('pages.twig', $app['data']);
 });
 
 $app->match('/admin/pages/new', function(Request $request) use($app) {
@@ -150,8 +153,9 @@ $app->get('/admin/page/{id}/delete', function(Request $request, $id) use($app) {
 
 });
 
-$app->get('/admin/authors', function(Request $request) use($app) {
-
+$app->get('/admin/authors', function(Request $request) use($app, $authors) {
+	$app['authors'] = $authors;
+	return $app['twig']->render('authors.twig', $app['data']);
 });
 
 $app->match('/admin/authors/new', function(Request $request) use($app) {
