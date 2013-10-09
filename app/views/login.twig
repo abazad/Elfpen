@@ -15,13 +15,12 @@
   <body id="login">
     <div class="container">
 
-      <form class="form-signin">
+      <form class="form-signin" action="{{ path('admin_login_check') }}" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level" placeholder="Username">
-        <input type="password" class="input-block-level" placeholder="Password">
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
+        {{ error }}
+        <input type="text" class="input-block-level" placeholder="Username" name="_username" value="{{ last_username }}">
+        <input type="password" class="input-block-level" placeholder="Password" name="_password">
+        <input type="hidden" name="_target_path" value="/admin/posts" />
         <button class="btn btn-large btn-primary" type="submit">Sign in</button>
       </form>
 

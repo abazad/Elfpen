@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Yaml\Yaml;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
@@ -13,6 +14,9 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\SessionServiceProvider;
+
+/** Tolkien Namespace **/
+use Tolkien\Factories\BuildFactory;
 
 /* Initialiaze */
 $app = new  Silex\Application();
@@ -30,6 +34,9 @@ $app->register(new SecurityServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new SessionServiceProvider());
 
+/** Basic Configuration **/
+$app['dir_blog'] = dirname(__DIR__) .  '/blog';
+define('CONFIG', $app['dir_blog'] . '/config.yml');
 
 /* Data & callback */
 $app['data'] = array(
@@ -37,6 +44,16 @@ $app['data'] = array(
 	'footer' => '&copy; 2013, Glend Maatita 2013'
 );
 
+$app['blog_name'] = 'blog';
+
+$app['config'] = Yaml::parse(file_get_contents(CONFIG));
+
+/** Get Authors **/
+$authors = Yaml::parse(file_get_contents($app['dir_blog'] . '/author.yml'));
+$authors_parse = array();
+foreach ($authors as $key => $value) {
+	$authors_parse[$key] = array($value['role'], $value['password']);
+}
 
 $app['security.firewalls'] = array(
 	'admin' => array(
@@ -46,9 +63,7 @@ $app['security.firewalls'] = array(
 			'check_path' => '/admin/login_check'
 			),
 		'logout' => array('logout_path' => '/admin/logout'),
-		'users' => array(
-			'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg==')
-			)
+		'users' => $authors_parse			
 		)
 	);
 	
@@ -89,15 +104,20 @@ $app->get('/', function(Request $request) use($app) {
 
 });
 
+$app->get('/signup', function(Request $request) use($app) {
+
+});
+
 /** Login **/
 $app->get('/login', function(Request $request) use($app) {
-	return $app['twig']->render('admin/login.tpl', array(
-        'error'         => $app['security.last_error']($request),
-        'last_username' => $app['session']->get('_security.last_username'),
+	return $app['twig']->render('login.twig', array(
+		'error'	=> $app['security.last_error']($request),
+		'last_username' => $app['session']->get('_security.last_username'),
     ));
 });
 
 $app->get('/admin/posts', function(Request $request) use($app) {
+
 
 });
 
