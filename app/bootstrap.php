@@ -126,6 +126,17 @@ $app->match('/admin/posts/new', function(Request $request) use($app) {
 	$form = $app['form.factory']->createBuilder('form') 
 		->add('title', 'text', array('constraints' => new Assert\NotBlank()))
 		->add('body', 'textarea', array('constraints' => new Assert\NotBlank()))
+		->add('categories', 'choice', array(
+			'choices' => $arrKota,
+			'multiple' => true,
+			'expanded' => true
+			))->getForm();
+
+	if('POST' == $request->getMethod())
+	{
+
+	}
+
 });
 
 $app->match('/admin/post/{id}/edit', function(Request $request, $id) use($app) {

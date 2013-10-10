@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "862812edb70c72eb194fcc3b0e7dee46",
+    "hash": "8f600795527af82c10234df1317c1146",
     "packages": [
         {
             "name": "michelf/php-markdown",
@@ -1615,16 +1615,16 @@
         },
         {
             "name": "tolkien/tolkien",
-            "version": "dev-master",
+            "version": "dev-elfbranch",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glendmaatita/Tolkien.git",
-                "reference": "98024ed8848e992ed7fea1c9674a509ea65c96c4"
+                "reference": "bf55e12a40b7591cfc92e87ddae7d5992c5d68d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glendmaatita/Tolkien/zipball/98024ed8848e992ed7fea1c9674a509ea65c96c4",
-                "reference": "98024ed8848e992ed7fea1c9674a509ea65c96c4",
+                "url": "https://api.github.com/repos/glendmaatita/Tolkien/zipball/bf55e12a40b7591cfc92e87ddae7d5992c5d68d9",
+                "reference": "bf55e12a40b7591cfc92e87ddae7d5992c5d68d9",
                 "shasum": ""
             },
             "require": {
@@ -1653,10 +1653,10 @@
             ],
             "description": "Simple Blogging Engine inspired by Jekyll",
             "support": {
-                "source": "https://github.com/glendmaatita/Tolkien/tree/master",
+                "source": "https://github.com/glendmaatita/Tolkien/tree/elfbranch",
                 "issues": "https://github.com/glendmaatita/Tolkien/issues"
             },
-            "time": "2013-10-09 11:20:32"
+            "time": "2013-10-09 19:11:34"
         },
         {
             "name": "twig/twig",

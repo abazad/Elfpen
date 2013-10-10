@@ -19,7 +19,7 @@
 		}
 	],
 	"require": {
-		"tolkien/tolkien": "dev-master",
+		"tolkien/tolkien": "dev-elfbranch",
 		"silex/silex": "~1.0",
 		"twig/twig": "v1.13.2",
 		"phpunit/phpunit": "3.7.*",
