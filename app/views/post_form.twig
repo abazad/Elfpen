@@ -1,3 +1,7 @@
+{% extends "layouts/application.tpl.twig" %}
+
+{% block content %}
+
 <div class="row-fluid">
   <!-- block -->
   <div class="block">
@@ -6,57 +10,52 @@
     </div>
     <div class="block-content collapse in">
       <div class="span12">
-        <form class="form-horizontal">
+        <form class="form-horizontal" action="/admin/posts" method="post">
           <fieldset>
             <legend>New Post</legend>
+            {% if app.errors is defined %}
             <div class="alert alert-error">
               <button class="close" data-dismiss="alert">&times;</button>
-              <strong>Error!</strong> This is a warning message.
+              {% for error in app.errors %}
+              {{ error.propertyPath }} {{ error.message }}<br>
+              {% endfor %}
             </div>
+            {% endif %}
+            {% if app.success is defined %}
             <div class="alert alert-info">
               <button class="close" data-dismiss="alert">&times;</button>
               <strong>Success!</strong> This is a warning message.
             </div>
+            {% endif %}
             <div class="control-group">
-              <label class="control-label" for="typeahead">Title* </label>
+              <label class="control-label" for="title">Title* </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead">
+                <input type="text" class="span6" name="title" value="{{ app.form.title }}">
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Categories* </label>
+              <label class="control-label" for="categories">Categories* </label>
               <div class="controls">
                 <label class="uniform">
-                  <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Notes
+                  <input class="uniform_on" type="checkbox" name="categories" value="notes"> Notes
                 </label>
+                {% for category in app.categories %}
                 <label class="uniform">
-                  <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Tutorial
+                  <input class="uniform_on" type="checkbox" name="categories" value="{{ category.name }}"> {{ category.name }}
                 </label>
-                <label class="uniform">
-                  <input class="uniform_on" type="checkbox" id="optionsCheckbox" value="option1"> Programming
-                </label>                          
+                {% endfor %}                       
               </div>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead">
-                <p class="help-block">Other Categories. Fill with comma separated</p>
+                <input type="text" class="span6" name="other_categories">
+                <p class="help-block">Add New Categories here. Fill with comma separated</p>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Post's Content </label>
+              <label class="control-label" for="body">Post's Content* </label>
               <div class="controls">
-                <textarea class="input-xlarge textarea" id="post-content" placeholder="Enter content ..." style="width: 700px; height: 560px"></textarea>
+                <textarea class="input-xlarge textarea" name="body" id="body" placeholder="Enter content ..." style="width: 700px; height: 560px">{{ app.form.body }}</textarea>
               </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="select01">Layout </label>
-              <div class="controls">
-                <select id="select01">
-                  <option>Layout 1</option>
-                  <option>Layout 2</option>
-                  <option>Layout 3</option>
-                </select>
-              </div>
-            </div>                      
+            </div>                     
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">Save</button>
               <button type="reset" class="btn">Cancel</button>
@@ -68,3 +67,4 @@
   </div>
   <!-- /block -->
 </div>
+{% endblock %}

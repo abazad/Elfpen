@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Elf-Pen {{ title }}</title>
+    <title>{{ title }}</title>
     <!-- Bootstrap -->
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
@@ -43,7 +43,7 @@
     <script src="/assets/bootstrap-markdown.js"></script>
     <script>
     $(function() {
-        $("#post-content").markdown({autofocus:false,savable:false,width: 700, height: 600})
+        $("#body").markdown({autofocus:false,savable:false,width: 700, height: 600})
         $(".uniform_on").uniform();
         //$(".chzn-select").chosen();
     });

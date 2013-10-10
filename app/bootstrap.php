@@ -40,7 +40,7 @@ define('CONFIG', $app['dir_blog'] . '/config.yml');
 
 /* Data & callback */
 $app['data'] = array(
-	'title' => 'Elf-Pen Default Admin Panel for Tolkien Static Web Generator',
+	'title' => 'Elf-Pen - Default Admin Panel for Tolkien',
 	'footer' => '&copy; 2013, Glend Maatita 2013'
 );
 
@@ -81,18 +81,18 @@ $app['debug'] = true;
  * | GET                      | /admin/dashboard             | Dashboard                   |
  * | GET                      | /admin/posts                 | List of posts               |
  * | GET                      | /admin/posts/new             | Add New post                |
- * | POST                     | /admin/posts/new             | Save new post               |
+ * | POST                     | /admin/posts                 | Save new post               |
  * | GET                      | /admin/post/{id}/edit        | Edit a post                 |
  * | POST                     | /admin/post/{id}/edit        | Update post                 |
  * | DELETE                   | /admin/post/{id}/delete      | Delete a post               |
  * | GET                      | /admin/pages/new             | Add New page                |
- * | POST                     | /admin/pages/new             | Save new page               |
+ * | POST                     | /admin/pages                 | Save new page               |
  * | GET                      | /admin/page/{id}/edit        | Edit a page                 |
  * | POST                     | /admin/page/{id}/edit        | Update page                 |
  * | DELETE                   | /admin/page/{id}/delete      | Delete a page               |
  * | GET                      | /admin/authors               | List of authors             |
  * | GET                      | /admin/authors/new           | Add new author              |
- * | POST                     | /admin/authors/new           | Save author                 |
+ * | POST                     | /admin/authors               | Save author                 |
  * | GET                      | /admin/author/{id}/edit      | Edit a author               |
  * | POST                     | /admin/author/{id}/edit      | Update author               |
  * | DELETE                   | /admin/author/{id}/delete    | Delete a author             |
@@ -122,21 +122,37 @@ $app->get('/admin/posts', function(Request $request) use($app) {
 	return $app['twig']->render('posts.twig', $app['data']);
 });
 
-$app->match('/admin/posts/new', function(Request $request) use($app) {
-	$form = $app['form.factory']->createBuilder('form') 
-		->add('title', 'text', array('constraints' => new Assert\NotBlank()))
-		->add('body', 'textarea', array('constraints' => new Assert\NotBlank()))
-		->add('categories', 'choice', array(
-			'choices' => $arrKota,
-			'multiple' => true,
-			'expanded' => true
-			))->getForm();
+$app->get('/admin/posts/new', function(Request $request) use($app) {
+	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
+	$app['form'] = array(
+		'title' => '',
+		'other_categories' => '',
+		'body' => ''
+		);
+	return $app['twig']->render('post_form.twig', $app['data']);
+});
 
-	if('POST' == $request->getMethod())
-	{
+$app->post('/admin/posts', function(Request $request) use($app) {
+	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
+	$app['form'] = array(
+		'title' => $request->request->get('title'),
+		'categories' => $request->request->get('categories'),
+		'other_categories' => $request->request->get('other_categories'),
+		'body' => $request->request->get('body')
+		);
 
+	$constraint = new Assert\Collection(array(
+		'title' => new Assert\NotBlank(),
+		'body' => new Assert\NotBlank(),
+		'categories' => new Assert\NotBlank(),
+		'other_categories' => array()
+		));
+
+	$app['errors'] = $app['validator']->validateValue($app['form'], $constraint);
+	if(count($app['errors']) > 0) {
+		return $app['twig']->render('post_form.twig', $app['data']);	
 	}
-
+	return $app->redirect('/admin/posts');
 });
 
 $app->match('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
@@ -147,13 +163,35 @@ $app->get('/admin/post/{id}/delete', function(Request $request, $id) use($app) {
 
 });
 
-$app->get('/admin/pages/', function(Request $request) use($app) {
+$app->get('/admin/pages', function(Request $request) use($app) {
 	$app['pages'] = TolkienFacade::build($app['dir_blog'], 'page');
 	return $app['twig']->render('pages.twig', $app['data']);
 });
 
-$app->match('/admin/pages/new', function(Request $request) use($app) {
+$app->get('/admin/pages/new', function(Request $request) use($app) {
+	$app['form'] = array(
+		'title' => '',
+		'body' => ''
+		);
+	return $app['twig']->render('page_form.twig', $app['data']);
+});
 
+$app->post('/admin/pages', function(Request $request) use($app) {
+	$app['form'] = array(
+		'title' => $request->request->get('title'),
+		'body' => $request->request->get('body')
+		);
+
+	$constraint = new Assert\Collection(array(
+		'title' => new Assert\NotBlank(),
+		'body' => new Assert\NotBlank()
+		));
+
+	$app['errors'] = $app['validator']->validateValue($app['form'], $constraint);
+	if(count($app['errors']) > 0) {
+		return $app['twig']->render('page_form.twig', $app['data']);	
+	}
+	return $app->redirect('/admin/pages');
 });
 
 $app->match('/admin/page/{id}/edit', function(Request $request, $id) use($app) {
