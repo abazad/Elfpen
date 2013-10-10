@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Yaml\Yaml;
-use Silex\Provider\FormServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
@@ -25,7 +24,7 @@ $app = new  Silex\Application();
 $app->register(new TwigServiceProvider(), array(
 	'twig.path' => __DIR__.'/views',
 ));
-$app->register(new FormServiceProvider());
+//$app->register(new FormServiceProvider());
 $app->register(new TranslationServiceProvider(), array(
     'locale_fallbacks' => array('en'),
 ));
@@ -207,8 +206,43 @@ $app->get('/admin/authors', function(Request $request) use($app, $authors) {
 	return $app['twig']->render('authors.twig', $app['data']);
 });
 
-$app->match('/admin/authors/new', function(Request $request) use($app) {
+$app->get('/admin/authors/new', function(Request $request) use($app) {
+	$app['form'] = array(
+		'name' => '',
+		'email' => '',
+		'signature' => '',
+		'facebook' => '',
+		'twitter' => '',
+		'github' => '',
+		'username' => ''
+		);
+	return $app['twig']->render('author_form.twig', $app['data']);
+});
 
+$app->post('/admin/authors', function(Request $request) use($app) {
+	$app['form'] = array(
+		'name' => $request->request->get('name'),
+		'email' => $request->request->get('email'),
+		'signature' => $request->request->get('signature'),
+		'facebook' => $request->request->get('facebook'),
+		'twitter' => $request->request->get('twitter'),
+		'github' => $request->request->get('github'),
+		'password' => $request->request->get('password'),
+		'password_confirmation' => $request->request->get('password_confirmation')
+		);
+
+	$constraint = new Assert\Collection(array(
+		'name' => new Assert\NotBlank(),
+		'email' => new Assert\Email(),
+		'password' => new Assert\NotBlank(),
+		'password_confirmation' => new Assert\NotBlank()
+		));
+
+	$app['errors'] = $app['validator']->validateValue($app['form'], $constraint);
+	if(count($app['errors']) > 0) {
+		return $app['twig']->render('author_form.twig', $app['data']);	
+	}
+	return $app->redirect('/admin/pages');
 });
 
 $app->match('/admin/author/{id}/edit', function(Request $request, $id) use($app) {

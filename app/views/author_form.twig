@@ -1,4 +1,6 @@
+{% extends "layouts/application.tpl.twig" %}
 
+{% block content %}
 <div class="row-fluid">
   <!-- block -->
   <div class="block">
@@ -7,72 +9,78 @@
     </div>
     <div class="block-content collapse in">
       <div class="span12">
-        <form class="form-horizontal">
+        <form class="form-horizontal" method="post" action="/admin/authors">
           <fieldset>
             <legend>New Author</legend>
+            {% if app.errors is defined %}
             <div class="alert alert-error">
               <button class="close" data-dismiss="alert">&times;</button>
-              <strong>Error!</strong> This is a warning message.
+              {% for error in app.errors %}
+              {{ error.propertyPath }} {{ error.message }}<br>
+              {% endfor %}
             </div>
+            {% endif %}
+            {% if app.success is defined %}
             <div class="alert alert-info">
               <button class="close" data-dismiss="alert">&times;</button>
               <strong>Success!</strong> This is a warning message.
             </div>
+            {% endif %}
             <div class="control-group">
-              <label class="control-label" for="typeahead">Name* </label>
+              <label class="control-label" for="name">Name* </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead">
+                <input type="text" class="span6" name="name" value="{{ app.form.name }}">
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Email* </label>
+              <label class="control-label" for="email">Email* </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead" placeholder="Ex. user@domain.tld">
+                <input type="text" class="span6" name="email" placeholder="Ex. user@domain.tld" value="{{ app.form.email }}">
                 <p class="help-block">Email must be valid with right format </p>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Signature </label>
+              <label class="control-label" for="signature">Signature </label>
               <div class="controls">
-                <textarea class="input-xlarge textarea" placeholder="Enter Signature ..." style="width: 600px; height: 200px"></textarea>
+                <textarea class="input-xlarge textarea" placeholder="Enter Signature ..." style="width: 600px; height: 200px" name="signature">{{ app.form.signature }}</textarea>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Facebook </label>
+              <label class="control-label" for="facebook">Facebook </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead" placeholder="facebook account ..">
+                <input type="text" class="span6" name="facebook" placeholder="facebook account .." value="{{ app.form.facebook }}">
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Twitter </label>
+              <label class="control-label" for="twitter">Twitter </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead" placeholder="twitter account ..">
+                <input type="text" class="span6" name="twitter" placeholder="twitter account .." value="{{ app.form.twitter }}">
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Github </label>
+              <label class="control-label" for="github">Github </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead" placeholder="github account ..">
+                <input type="text" class="span6" name="github" placeholder="github account .." value="{{ app.form.github }}">
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Username* </label>
+              <label class="control-label" for="username">Username* </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead">
+                <input type="text" class="span6" name="username" value="{{ app.form.username }}">
                 <p class="help-block">Author's username. Used for login</p>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Password* </label>
+              <label class="control-label" for="password">Password* </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead">
+                <input type="password" class="span6" name="password">
                 <p class="help-block">Password for login</p>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Password Confirmation*</label>
+              <label class="control-label" for="password_confirmation">Password Confirmation*</label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead">
+                <input type="password" class="span6" name="password_confirmation">
                 <p class="help-block">Fill with the same value with password field</p>
               </div>
             </div>
@@ -87,3 +95,4 @@
   </div>
   <!-- /block -->
 </div>
+{% endblock %}
