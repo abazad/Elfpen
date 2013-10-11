@@ -116,6 +116,27 @@ $app->get('/login', function(Request $request) use($app) {
     ));
 });
 
+$app->match('/admin/check_session', function(Request $request) use($app, $authors) {
+	$username = $app['security']->getToken()->getUser()->getUsername();
+
+	foreach ($authors as $key => $value) {
+		if( $key == $username ) {
+			$app['session']->set('author', array(
+				'username' => $key,
+				'name' => $value['name'],
+				'email' => $value['email'],
+				'signature' => $value['signature'],				
+				'facebook' => $value['facebook'],
+				'twitter' => $value['twitter'],
+				'github' => $value['github'],
+				'role' => $value['role'],
+				));
+			break;
+		}
+	}
+	return $app->redirect('/admin/posts');
+});
+
 $app->get('/admin/posts', function(Request $request) use($app) {
 	$app['posts'] = TolkienFacade::build($app['dir_blog'], 'post');
 	return $app['twig']->render('posts.twig', $app['data']);
