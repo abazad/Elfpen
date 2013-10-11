@@ -292,8 +292,13 @@ $app->post('admin/page/{file}', function(Request $request, $file) use($app) {
 	return $app->redirect('/admin/pages');
 });
 
-$app->get('/admin/page/{id}/delete', function(Request $request, $id) use($app) {
+$app->get('/admin/page/{file}/delete', function(Request $request, $file) use($app) {
+	if(unlink($file)) 
+		$app['notification'] = "A page has been succesfully deleted";
+	else 
+		$app['notification'] = "Error when deleted a page";
 
+	return $app->redirect('/admin/pages');
 });
 
 $app->get('/admin/authors', function(Request $request) use($app, $authors) {
