@@ -1,4 +1,6 @@
+{% extends "layouts/application.tpl.twig" %}
 
+{% block content %}
 <div class="row-fluid">
   <!-- block -->
   <div class="block">
@@ -7,33 +9,40 @@
     </div>
     <div class="block-content collapse in">
       <div class="span12">
-        <form class="form-horizontal">
+        <form class="form-horizontal" action="/admin/setting/edit" method="post">
           <fieldset>
             <legend>Update Setting</legend>
+            {% if app.errors is defined %}
+            <div class="alert alert-error">
+              <button class="close" data-dismiss="alert">&times;</button>
+              {% for error in app.errors %}
+              {{ error.propertyPath }} {{ error.message }}<br>
+              {% endfor %}
+            </div>
+            {% endif %}
             <div class="control-group">
-              <label class="control-label" for="typeahead">Title </label>
+              <label class="control-label" for="title">Title* </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead">
-                <p class="help-block">Your Site Title</p>
+                <input type="text" class="span6" name="title" value="{{ app.form.title }}">
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="typeahead">Tagline </label>
+              <label class="control-label" for="tagline">Tagline* </label>
               <div class="controls">
-                <input type="text" class="span6" id="typeahead">
-                <p class="help-block">Your Site Tagline</p>
+                <input type="text" class="span6" name="tagline" value="{{ app.form.tagline }}">
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="select01">Pagination </label>
+              <label class="control-label" for="pagination">Pagination* </label>
               <div class="controls">
-                <select id="select01" class="chzn-select">
-                  <option>5</option>
-                  <option>10</option>
-                  <option>15</option>
-                  <option>20</option>
-                  <option>25</option>
-                  <option>30</option>
+                <select name="pagination" class="chzn-select">
+                  {% set selected = null %}
+                  {% for pagination in app.paginations %}
+                  {% if pagination == app.form.pagination %}
+                  {% set selected = 'selected' %}
+                  {% endif %}
+                  <option value="{{ pagination }}" {{ selected }}>{{ pagination }}</option>
+                  {% endfor %}
                 </select>
               </div>
             </div>
@@ -48,3 +57,4 @@
   </div>
   <!-- /block -->
 </div>
+{% endblock %}

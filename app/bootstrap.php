@@ -179,7 +179,7 @@ $app->get('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
 
 $app->post('/admin/post/{id}', function(Request $request, $id) use($app) {
 	
-}) 
+});
 
 $app->get('/admin/post/{id}/delete', function(Request $request, $id) use($app) {
 
@@ -301,8 +301,33 @@ $app->get('/admin/author/{id}/delete', function(Request $request, $id) use($app)
 
 });
 
-$app->match('/admin/setting', function(Request $request, $id) use($app) {
+$app->match('/admin/setting/edit', function(Request $request) use($app) {
+	$app['paginations'] = array('5', '10', '15', '20');
+	$app['form'] = array(
+		'title' => $app['config']['config']['title'],
+		'tagline' => $app['config']['config']['tagline'],
+		'pagination' => $app['config']['config']['pagination']
+		);
 
+	if('POST' == $request->getMethod()) {
+		$app['form'] = array(
+			'title' => $request->request->get('title'),
+			'tagline' => $request->request->get('tagline'),
+			'pagination' => $request->request->get('pagination')
+			);
+
+		$constraint = new Assert\Collection(array(
+			'title' => new Assert\NotBlank(),
+			'tagline' => new Assert\NotBlank(),
+			'pagination' => new Assert\NotBlank()
+			));
+
+		$app['errors'] = $app['validator']->validateValue($app['form'], $constraint);
+		if(count($app['errors']) > 0) {
+			return $app['twig']->render('setting.twig', $app['data']);	
+		}
+	}
+	return $app['twig']->render('setting.twig', $app['data']);
 });
 
 $app->run();
