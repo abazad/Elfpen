@@ -123,6 +123,7 @@ $app->get('/admin/posts', function(Request $request) use($app) {
 
 $app->get('/admin/posts/new', function(Request $request) use($app) {
 	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
+	$app['post_categories'] = array();
 	$app['form'] = array(
 		'title' => '',
 		'other_categories' => '',
@@ -133,6 +134,8 @@ $app->get('/admin/posts/new', function(Request $request) use($app) {
 
 $app->post('/admin/posts', function(Request $request) use($app) {
 	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
+	$app['post_categories'] = array();
+
 	$app['form'] = array(
 		'title' => $request->request->get('title'),
 		'categories' => $request->request->get('categories'),
@@ -151,12 +154,32 @@ $app->post('/admin/posts', function(Request $request) use($app) {
 	if(count($app['errors']) > 0) {
 		return $app['twig']->render('post_form.twig', $app['data']);	
 	}
+
 	return $app->redirect('/admin/posts');
 });
 
-$app->match('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
+$app->get('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
+	// id is filename, unique property of Post
+	$posts = TolkienFacade::build($app['dir_blog'], 'post');
+	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
 
+	foreach ($posts as $post) {
+		if($post->getFileName() == $id) {
+			$app['form'] = array(
+				'title' => $post->getTitle(),
+				'body' => $post->getBody(),
+				'other_categories' => ''
+				);
+			$app['post_categories'] = explode(',', $post->getCategories());
+			break;
+		}		
+	}
+	return $app['twig']->render('post_form.twig', $app['data']);
 });
+
+$app->post('/admin/post/{id}', function(Request $request, $id) use($app) {
+	
+}) 
 
 $app->get('/admin/post/{id}/delete', function(Request $request, $id) use($app) {
 
@@ -193,7 +216,21 @@ $app->post('/admin/pages', function(Request $request) use($app) {
 	return $app->redirect('/admin/pages');
 });
 
-$app->match('/admin/page/{id}/edit', function(Request $request, $id) use($app) {
+$app->get('/admin/page/{id}/edit', function(Request $request, $id) use($app) {
+	$pages = TolkienFacade::build($app['dir_blog'], 'page');
+	foreach ($pages as $page) {
+		if($page->getFileName() == $id) {
+			$app['form'] = array(
+				'title' => $page->getTitle(),
+				'body' => $page->getBody()
+				);
+			break;
+		}
+	}
+	return $app['twig']->render('page_form.twig', $app['data']);
+});
+
+$app->post('admin/page/{id}', function(Request $request, $id) use($app) {
 
 });
 
@@ -227,6 +264,7 @@ $app->post('/admin/authors', function(Request $request) use($app) {
 		'facebook' => $request->request->get('facebook'),
 		'twitter' => $request->request->get('twitter'),
 		'github' => $request->request->get('github'),
+		'username' => $request->request->get('username'),
 		'password' => $request->request->get('password'),
 		'password_confirmation' => $request->request->get('password_confirmation')
 		);
@@ -234,6 +272,11 @@ $app->post('/admin/authors', function(Request $request) use($app) {
 	$constraint = new Assert\Collection(array(
 		'name' => new Assert\NotBlank(),
 		'email' => new Assert\Email(),
+		'signature' => array(),
+		'facebook' => array(),
+		'twitter' => array(),
+		'github' => array(),
+		'username' => new Assert\NotBlank(),
 		'password' => new Assert\NotBlank(),
 		'password_confirmation' => new Assert\NotBlank()
 		));
@@ -242,7 +285,12 @@ $app->post('/admin/authors', function(Request $request) use($app) {
 	if(count($app['errors']) > 0) {
 		return $app['twig']->render('author_form.twig', $app['data']);	
 	}
-	return $app->redirect('/admin/pages');
+	// dammit, cant find simple validation for this
+	else if($app['form']['password'] != $app['form']['password_confirmation']) {
+		$app['error_confirm'] = "Password and Confirmed Password doesn't match";
+		return $app['twig']->render('author_form.twig', $app['data']);		
+	}
+	return $app->redirect('/admin/authors');
 });
 
 $app->match('/admin/author/{id}/edit', function(Request $request, $id) use($app) {

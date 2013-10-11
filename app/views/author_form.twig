@@ -20,6 +20,12 @@
               {% endfor %}
             </div>
             {% endif %}
+            {% if app.error_confirm is defined %}
+            <div class="alert alert-error">
+              <button class="close" data-dismiss="alert">&times;</button>
+              {{ app.error_confirm }}
+            </div>
+            {% endif %}
             {% if app.success is defined %}
             <div class="alert alert-info">
               <button class="close" data-dismiss="alert">&times;</button>

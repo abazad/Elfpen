@@ -36,12 +36,20 @@
             <div class="control-group">
               <label class="control-label" for="categories">Categories* </label>
               <div class="controls">
+                {% set checked = null %}
+                {% if 'notes' in app.post_categories|keys %}
+                {% set checked = 'checked' %}
+                {% endif %}
                 <label class="uniform">
-                  <input class="uniform_on" type="checkbox" name="categories" value="notes"> Notes
+                  <input class="uniform_on" type="checkbox" name="categories" value="notes" {{ checked }}> Notes
                 </label>
                 {% for category in app.categories %}
+                {% set checked = null %}
+                {% if category in app.post_categories|keys %}
+                {% set checked = 'checked' %}
+                {% endif %}
                 <label class="uniform">
-                  <input class="uniform_on" type="checkbox" name="categories" value="{{ category.name }}"> {{ category.name }}
+                  <input class="uniform_on" type="checkbox" name="categories" value="{{ category.name }}" {{ checked }}> {{ category.name }}
                 </label>
                 {% endfor %}                       
               </div>
