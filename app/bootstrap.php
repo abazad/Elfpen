@@ -181,8 +181,13 @@ $app->post('/admin/post/{id}', function(Request $request, $id) use($app) {
 	
 });
 
-$app->get('/admin/post/{id}/delete', function(Request $request, $id) use($app) {
+$app->get('/admin/post/{file}/delete', function(Request $request, $file) use($app) {
+	if(unlink($file)) 
+		$app['notification'] = "A post has been succesfully deleted";
+	else 
+		$app['notification'] = "Error when deleted a post";
 
+	return $app->redirect('/admin/posts');
 });
 
 $app->get('/admin/pages', function(Request $request) use($app) {
@@ -230,8 +235,13 @@ $app->get('/admin/page/{id}/edit', function(Request $request, $id) use($app) {
 	return $app['twig']->render('page_form.twig', $app['data']);
 });
 
-$app->post('admin/page/{id}', function(Request $request, $id) use($app) {
+$app->post('admin/page/{file}', function(Request $request, $file) use($app) {
+	if(unlink($file)) 
+		$app['notification'] = "A page has been succesfully deleted";
+	else 
+		$app['notification'] = "Error when deleted a page";
 
+	return $app->redirect('/admin/pages');
 });
 
 $app->get('/admin/page/{id}/delete', function(Request $request, $id) use($app) {
