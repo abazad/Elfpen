@@ -23,12 +23,16 @@
             {% for post in app.posts %}
             <tr class="odd gradeX">
               <td><a href="">{{ post.title }}</a></td>
-              <td>Ruby . Rails . Programming</td>
+              <td>
+              {% for category in post.categories %}
+              {{ category.name }}
+              {% endfor %}
+              </td>
               <td>{{ post.author.name }}</td>
               <td>{{ post.publishDate }}</td>
               <td>
-                <a href="#" class="label label-info">edit</a>
-                <a href="#" class="label label-important">delete</a>
+                <a href="/admin/post/{{ post.filename }}/edit" class="label label-info">edit</a>
+                <a href="/admin/post/{{ post.file }}/delete" class="label label-important">delete</a>
                 <a href="{{ post.url }}" target="_blank" class="label label-warning">view</a>
               </td>
             </tr>

@@ -176,6 +176,25 @@ $app->post('/admin/posts', function(Request $request) use($app) {
 		return $app['twig']->render('post_form.twig', $app['data']);	
 	}
 
+	$author = $app['session']->get('author');
+	$categories = explode(',', implode(',', $app['form']['categories']) . ',' . $app['form']['other_categories']);
+
+	TolkienFacade::generate($app['dir_blog'], array(
+		'type' => 'post',
+		'layout' => 'post',
+		'title' => $app['form']['title'],
+		'author' => array(
+			'name' => $author['name'],
+			'email' => $author['email'],
+			'facebook' => $author['facebook'],
+			'twitter' => $author['twitter'],
+			'github' => $author['github'],
+			'signature' => $author['signature']
+			),
+		'categories' => $categories,
+		'body' => $app['form']['body']
+		));
+
 	return $app->redirect('/admin/posts');
 });
 
@@ -239,6 +258,14 @@ $app->post('/admin/pages', function(Request $request) use($app) {
 	if(count($app['errors']) > 0) {
 		return $app['twig']->render('page_form.twig', $app['data']);	
 	}
+
+	TolkienFacade::generate($app['dir_blog'], array(
+		'type' => 'page',
+		'layout' => 'page',
+		'title' => $app['form']['title'],
+		'body' => $app['form']['body']
+		));
+
 	return $app->redirect('/admin/pages');
 });
 

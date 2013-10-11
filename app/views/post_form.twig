@@ -41,7 +41,7 @@
                 {% set checked = 'checked' %}
                 {% endif %}
                 <label class="uniform">
-                  <input class="uniform_on" type="checkbox" name="categories" value="notes" {{ checked }}> Notes
+                  <input class="uniform_on" type="checkbox" name="categories[]" value="notes" {{ checked }}> Notes
                 </label>
                 {% for category in app.categories %}
                 {% set checked = null %}
