@@ -37,7 +37,9 @@ $app->register(new SessionServiceProvider());
 $app['dir_blog'] = realpath(dirname(__DIR__) .  '/blog');
 define('CONFIG', $app['dir_blog'] . '/config.yml');
 
+
 /* Data & callback */
+
 $app['data'] = array(
 	'title' => 'Elf-Pen - Default Admin Panel for Tolkien',
 	'footer' => '&copy; 2013, Glend Maatita 2013'
@@ -45,9 +47,13 @@ $app['data'] = array(
 
 //$app['blog_name'] = 'blog';
 $app['config'] = Yaml::parse(file_get_contents(CONFIG));
+
 /** end of data **/
 
+
+
 /** Authentication & Authorization **/
+
 $authors = Yaml::parse(file_get_contents($app['dir_blog'] . '/author.yml'));
 $authors_parse = array();
 foreach ($authors as $key => $value) {
@@ -65,6 +71,7 @@ $app['security.firewalls'] = array(
 		'users' => $authors_parse			
 		)
 	);
+
 /** End of authentication **/
 	
 $app['debug'] = true;
@@ -137,6 +144,8 @@ $app->match('/admin/check_session', function(Request $request) use($app, $author
 	return $app->redirect('/admin/posts');
 });
 
+/** POST MANAGER **/
+
 $app->get('/admin/posts', function(Request $request) use($app) {
 	$app['posts'] = TolkienFacade::build($app['dir_blog'], 'post');
 	return $app['twig']->render('posts.twig', $app['data']);
@@ -148,7 +157,8 @@ $app->get('/admin/posts/new', function(Request $request) use($app) {
 	$app['form'] = array(
 		'title' => '',
 		'other_categories' => '',
-		'body' => ''
+		'body' => '',
+		'file' => ''
 		);
 	return $app['twig']->render('post_form.twig', $app['data']);
 });
@@ -161,14 +171,16 @@ $app->post('/admin/posts', function(Request $request) use($app) {
 		'title' => $request->request->get('title'),
 		'categories' => $request->request->get('categories'),
 		'other_categories' => $request->request->get('other_categories'),
-		'body' => $request->request->get('body')
+		'body' => $request->request->get('body'),
+		'file' => $request->request->get('file')
 		);
 
 	$constraint = new Assert\Collection(array(
 		'title' => new Assert\NotBlank(),
 		'body' => new Assert\NotBlank(),
 		'categories' => new Assert\NotBlank(),
-		'other_categories' => array()
+		'other_categories' => array(),
+		'file' => array()
 		));
 
 	$app['errors'] = $app['validator']->validateValue($app['form'], $constraint);
@@ -178,6 +190,11 @@ $app->post('/admin/posts', function(Request $request) use($app) {
 
 	$author = $app['session']->get('author');
 	$categories = explode(',', implode(',', $app['form']['categories']) . ',' . $app['form']['other_categories']);
+
+	// indicates that form is from edit form
+	if($app['form']['file'] != '') {
+		unlink($app['form']['file']);
+	}
 
 	TolkienFacade::generate($app['dir_blog'], array(
 		'type' => 'post',
@@ -208,17 +225,14 @@ $app->get('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
 			$app['form'] = array(
 				'title' => $post->getTitle(),
 				'body' => $post->getBody(),
-				'other_categories' => ''
+				'other_categories' => '',
+				'file' => $post->getFile()
 				);
 			$app['post_categories'] = explode(',', $post->getCategories());
 			break;
 		}		
 	}
 	return $app['twig']->render('post_form.twig', $app['data']);
-});
-
-$app->post('/admin/post/{id}', function(Request $request, $id) use($app) {
-	
 });
 
 $app->get('/admin/post/{file}/delete', function(Request $request, $file) use($app) {
@@ -230,6 +244,11 @@ $app->get('/admin/post/{file}/delete', function(Request $request, $file) use($ap
 	return $app->redirect('/admin/posts');
 });
 
+/** END OF POST MANAGER **/
+
+
+/** PAGE MANAGER **/
+
 $app->get('/admin/pages', function(Request $request) use($app) {
 	$app['pages'] = TolkienFacade::build($app['dir_blog'], 'page');
 	return $app['twig']->render('pages.twig', $app['data']);
@@ -238,7 +257,8 @@ $app->get('/admin/pages', function(Request $request) use($app) {
 $app->get('/admin/pages/new', function(Request $request) use($app) {
 	$app['form'] = array(
 		'title' => '',
-		'body' => ''
+		'body' => '',
+		'file' => ''
 		);
 	return $app['twig']->render('page_form.twig', $app['data']);
 });
@@ -246,12 +266,14 @@ $app->get('/admin/pages/new', function(Request $request) use($app) {
 $app->post('/admin/pages', function(Request $request) use($app) {
 	$app['form'] = array(
 		'title' => $request->request->get('title'),
-		'body' => $request->request->get('body')
+		'body' => $request->request->get('body'),
+		'file' => $request->request->get('file')
 		);
 
 	$constraint = new Assert\Collection(array(
 		'title' => new Assert\NotBlank(),
-		'body' => new Assert\NotBlank()
+		'body' => new Assert\NotBlank(),
+		'file' => array()
 		));
 
 	$app['errors'] = $app['validator']->validateValue($app['form'], $constraint);
@@ -259,6 +281,10 @@ $app->post('/admin/pages', function(Request $request) use($app) {
 		return $app['twig']->render('page_form.twig', $app['data']);	
 	}
 
+	if($app['form']['file']) {
+		unlink($app['form']['file']);
+	}
+	
 	TolkienFacade::generate($app['dir_blog'], array(
 		'type' => 'page',
 		'layout' => 'page',
@@ -300,6 +326,11 @@ $app->get('/admin/page/{file}/delete', function(Request $request, $file) use($ap
 
 	return $app->redirect('/admin/pages');
 });
+
+/** END OF PAGE MANAGER **/
+
+
+/** AUTHOR MANAGER **/
 
 $app->get('/admin/authors', function(Request $request) use($app, $authors) {
 	$app['authors'] = $authors;
@@ -356,13 +387,18 @@ $app->post('/admin/authors', function(Request $request) use($app) {
 	return $app->redirect('/admin/authors');
 });
 
-$app->match('/admin/author/{id}/edit', function(Request $request, $id) use($app) {
+$app->match('/admin/author/{username}/edit', function(Request $request, $username) use($app) {
 
 });
 
-$app->get('/admin/author/{id}/delete', function(Request $request, $id) use($app) {
+$app->get('/admin/author/{username}/delete', function(Request $request, $username) use($app) {
 
 });
+
+/** END OF AUTHOR MANAGER **/
+
+
+/** UPDATE SETTING **/
 
 $app->match('/admin/setting/edit', function(Request $request) use($app) {
 	$app['paginations'] = array('5', '10', '15', '20');
@@ -392,5 +428,7 @@ $app->match('/admin/setting/edit', function(Request $request) use($app) {
 	}
 	return $app['twig']->render('setting.twig', $app['data']);
 });
+
+/** END OF SETTING **/
 
 $app->run();
