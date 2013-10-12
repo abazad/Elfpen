@@ -20,15 +20,14 @@
             </tr>
           </thead>
           <tbody>
-            {% for author in app.authors %}
+            {% for key, author in app.authors %}
             <tr class="odd gradeX">
               <td><a href="#">{{ author.name }}</a></td>
               <td>Administrator</td>
               <td><a href="#">{{ author.email }}</a></td>
               <td>
-                <a href="#" class="label label-info">edit</a>
-                <a href="#" class="label label-important">delete</a>
-                <a href="#" class="label label-warning">view</a>
+                <a href="/admin/author/{{ key }}/edit" class="label label-info">edit</a>
+                <a href="/admin/author/{{ key }}/delete" class="label label-important">delete</a>
               </td>
             </tr>
             {% endfor %}

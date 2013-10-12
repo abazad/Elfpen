@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Dumper;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
@@ -36,6 +37,7 @@ $app->register(new SessionServiceProvider());
 /** Basic Configuration **/
 $app['dir_blog'] = realpath(dirname(__DIR__) .  '/blog');
 define('CONFIG', $app['dir_blog'] . '/config.yml');
+define('AUTHOR', $app['dir_blog'] . '/author.yml');
 
 
 /* Data & callback */
@@ -73,6 +75,8 @@ $app['security.firewalls'] = array(
 	);
 
 /** End of authentication **/
+
+$dumper = new Dumper();
 	
 $app['debug'] = true;
 
@@ -284,7 +288,7 @@ $app->post('/admin/pages', function(Request $request) use($app) {
 	if($app['form']['file']) {
 		unlink($app['form']['file']);
 	}
-	
+
 	TolkienFacade::generate($app['dir_blog'], array(
 		'type' => 'page',
 		'layout' => 'page',
@@ -350,7 +354,7 @@ $app->get('/admin/authors/new', function(Request $request) use($app) {
 	return $app['twig']->render('author_form.twig', $app['data']);
 });
 
-$app->post('/admin/authors', function(Request $request) use($app) {
+$app->post('/admin/authors', function(Request $request) use($app, $authors, $dumper) {
 	$app['form'] = array(
 		'name' => $request->request->get('name'),
 		'email' => $request->request->get('email'),
@@ -384,15 +388,42 @@ $app->post('/admin/authors', function(Request $request) use($app) {
 		$app['error_confirm'] = "Password and Confirmed Password doesn't match";
 		return $app['twig']->render('author_form.twig', $app['data']);		
 	}
+
+	// process here
+	$authors[$app['form']['username']] = array(
+		'name' => $app['form']['name'],
+		'email' => $app['form']['email'],
+		'signature' => $app['form']['signature'],
+		'facebook' => $app['form']['facebook'],
+		'twitter' => $app['form']['twitter'],
+		'github' => $app['form']['github'],
+		'username' => $app['form']['username'],
+		'password' => $app['form']['password']
+		);
+
+	file_put_contents(AUTHOR, $dumper->dump($authors));
 	return $app->redirect('/admin/authors');
 });
 
-$app->match('/admin/author/{username}/edit', function(Request $request, $username) use($app) {
+$app->match('/admin/author/{username}/edit', function(Request $request, $username) use($app, $authors) {
+	$author = $authors[$username];
 
+	$app['form'] = array(
+		'name' => $author['name'],
+		'email' => $author['email'],
+		'signature' => $author['signature'],
+		'facebook' => $author['facebook'],
+		'twitter' => $author['twitter'],
+		'github' => $author['github'],
+		'username' => $username
+		);
+	return $app['twig']->render('author_form.twig', $app['data']);
 });
 
-$app->get('/admin/author/{username}/delete', function(Request $request, $username) use($app) {
-
+$app->get('/admin/author/{username}/delete', function(Request $request, $username) use($app, $authors) {
+	unset($authors[$username]);
+	file_put_contents(AUTHOR, $dumper->dump($authors));
+	return $app->redirect('/admin/authors');
 });
 
 /** END OF AUTHOR MANAGER **/
