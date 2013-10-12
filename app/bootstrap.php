@@ -17,6 +17,7 @@ use Silex\Provider\SessionServiceProvider;
 
 /** Tolkien Namespace **/
 use Tolkien\Facades\Tolkien as TolkienFacade;
+use Tolkien\Init;
 
 /* Initialiaze */
 $app = new  Silex\Application();
@@ -35,10 +36,11 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new SessionServiceProvider());
 
 /** Basic Configuration **/
-$app['dir_blog'] = realpath(dirname(__DIR__) .  '/blog');
-define('CONFIG', $app['dir_blog'] . '/config.yml');
-define('AUTHOR', $app['dir_blog'] . '/author.yml');
 
+$app['dir_blog'] = realpath(dirname(__DIR__) .  '/blog');
+$authors = array();
+$authors_parse = array();
+$dumper = new Dumper();
 
 /* Data & callback */
 
@@ -47,19 +49,24 @@ $app['data'] = array(
 	'footer' => '&copy; 2013, Glend Maatita 2013'
 );
 
-//$app['blog_name'] = 'blog';
-$app['config'] = Yaml::parse(file_get_contents(CONFIG));
-
 /** end of data **/
 
+define('CONFIG', '');
+define('AUTHOR', '');
 
+if(file_exists($app['dir_blog'])) 
+{
+	define('CONFIG', $app['dir_blog'] . '/config.yml');
+	define('AUTHOR', $app['dir_blog'] . '/author.yml');
+	$app['config'] = Yaml::parse(file_get_contents(CONFIG));
 
-/** Authentication & Authorization **/
+	/** Authentication & Authorization **/
 
-$authors = Yaml::parse(file_get_contents($app['dir_blog'] . '/author.yml'));
-$authors_parse = array();
-foreach ($authors as $key => $value) {
-	$authors_parse[$key] = array($value['role'], $value['password']);
+	$authors = Yaml::parse(file_get_contents($app['dir_blog'] . '/author.yml'));
+	$authors_parse = array();
+	foreach ($authors as $key => $value) {
+		$authors_parse[$key] = array($value['role'], $value['password']);
+	}
 }
 
 $app['security.firewalls'] = array(
@@ -70,13 +77,11 @@ $app['security.firewalls'] = array(
 			'check_path' => '/admin/login_check'
 			),
 		'logout' => array('logout_path' => '/admin/logout'),
-		'users' => $authors_parse			
+		'users' => $authors_parse
 		)
 	);
 
 /** End of authentication **/
-
-$dumper = new Dumper();
 	
 $app['debug'] = true;
 
@@ -115,12 +120,69 @@ $app->get('/', function(Request $request) use($app) {
 
 });
 
-$app->get('/signup', function(Request $request) use($app) {
+$app->match('/install', function(Request $request) use($app, $dumper) {
+	$app['form'] = array(
+		'name' => '',
+		'email' => '',
+		'username' => '',
+		'password' => '',
+		'password_confirmation' => ''
+		);
 
+	if('POST' == $request->getMethod()) {
+		$app['form'] = array(
+			'name' => $request->request->get('name'),
+			'email' => $request->request->get('email'),
+			'username' => $request->request->get('username'),
+			'password' => $request->request->get('password'),
+			'password_confirmation' => $request->request->get('password_confirmation')
+		);
+
+		$constraint = new Assert\Collection(array(
+			'name' => new Assert\NotBlank(),
+			'email' => new Assert\NotBlank(),
+			'username' => new Assert\NotBlank(),
+			'password' => new Assert\NotBlank(),
+			'password_confirmation' => new Assert\NotBlank()
+		));
+
+		$app['errors'] = $app['validator']->validateValue($app['form'], $constraint);
+		if(count($app['errors']) > 0) {
+			return $app['twig']->render('install.twig', $app['data']);	
+		}
+		else if($app['form']['password'] != $app['form']['password_confirmation']) {
+			$app['error_confirm'] = "Password and Confirmed Password doesn't match";
+			return $app['twig']->render('install.twig', $app['data']);
+		}
+
+		$init = new Init('blog');
+		$init->create();
+
+		$administrator = array(
+			$app['form']['username'] => array(
+				'name' => $app['form']['name'],
+				'email' => $app['form']['email'],
+				'username' => $app['form']['username'],
+				'password' => $app['form']['password'],
+				'signature' => 'Your signature',
+				'facebook' => 'Your facebook account',
+				'twitter' => 'Your twitter account',
+				'github' => 'Your github account',
+				'role' => 'author',
+				)
+			);
+
+		file_put_contents(AUTHOR, $dumper->dump($administrator));
+		return $app->redirect('/admin/setting/edit');
+	}
+	return $app['twig']->render('install.twig', $app['data']);
 });
 
 /** Login **/
 $app->get('/login', function(Request $request) use($app) {
+	if(!file_exists(realpath(dirname(__DIR__) .  '/blog'))) 
+		return $app->redirect('/install');
+
 	return $app['twig']->render('login.twig', array(
 		'error'	=> $app['security.last_error']($request),
 		'last_username' => $app['session']->get('_security.last_username'),
@@ -462,7 +524,7 @@ $app->match('/admin/setting/edit', function(Request $request) use($app, $dumper)
 		'title' => $app['form']['title'],
 		'tagline' => $app['form']['tagline'],
 		'pagination' => $app['form']['pagination']
-		)
+		);
 	file_put_contents(CONFIG, $dumper->dump($app['config']));
 	return $app['twig']->render('setting.twig', $app['data']);
 });

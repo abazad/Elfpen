@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Installation</title>
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="assets/styles.css" rel="stylesheet" media="screen">
+     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+  </head>
+  <body id="login">
+    <div class="container">
+
+      <form class="form-signin" action="/install" method="post">
+        <h3 class="form-signin-heading">Tolkien Web Static Generator</h3>
+        {% if app.errors is defined %}
+        <div class="alert alert-error">
+          <button class="close" data-dismiss="alert">&times;</button>
+          {% for error in app.errors %}
+          {{ error.propertyPath }} {{ error.message }}<br>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if app.error_confirm is defined %}
+        <div class="alert alert-error">
+          <button class="close" data-dismiss="alert">&times;</button>
+          {{ app.error_confirm }}
+        </div>
+        {% endif %}
+        <input type="text" class="input-block-level" placeholder="Administrator Name" name="name" value="{{ app.form.name }}">
+         <input type="text" class="input-block-level" placeholder="Email" name="email" value="{{ app.form.email }}">
+        <input type="text" class="input-block-level" placeholder="Administrator Username" name="username" value="{{ app.form.username }}">
+        <input type="password" class="input-block-level" placeholder="Password" name="password" value="{{ app.form.password }}">
+        <input type="password" class="input-block-level" placeholder="Confirm Password" name="password_confirmation" value="{{ app.form.password_confirmation }}">
+        <button class="btn btn-large btn-primary" type="submit">Install</button>
+      </form>
+
+    </div> <!-- /container -->
+    <script src="vendors/jquery-1.9.1.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
