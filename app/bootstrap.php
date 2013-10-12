@@ -431,7 +431,7 @@ $app->get('/admin/author/{username}/delete', function(Request $request, $usernam
 
 /** UPDATE SETTING **/
 
-$app->match('/admin/setting/edit', function(Request $request) use($app) {
+$app->match('/admin/setting/edit', function(Request $request) use($app, $dumper) {
 	$app['paginations'] = array('5', '10', '15', '20');
 	$app['form'] = array(
 		'title' => $app['config']['config']['title'],
@@ -457,6 +457,13 @@ $app->match('/admin/setting/edit', function(Request $request) use($app) {
 			return $app['twig']->render('setting.twig', $app['data']);	
 		}
 	}
+
+	$app['config']['config'] = array(
+		'title' => $app['form']['title'],
+		'tagline' => $app['form']['tagline'],
+		'pagination' => $app['form']['pagination']
+		)
+	file_put_contents(CONFIG, $dumper->dump($app['config']));
 	return $app['twig']->render('setting.twig', $app['data']);
 });
 
