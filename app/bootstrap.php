@@ -37,7 +37,7 @@ $app->register(new SessionServiceProvider());
 
 /** Basic Configuration **/
 
-$app['dir_blog'] = realpath(dirname(__DIR__) .  '/blog');
+$app['dir_blog'] = realpath(dirname(__DIR__) .  '/public/blog');
 $authors = array();
 $authors_parse = array();
 $dumper = new Dumper();
@@ -51,14 +51,13 @@ $app['data'] = array(
 
 /** end of data **/
 
-define('CONFIG', '');
-define('AUTHOR', '');
+$config_url = '';
+$author_url = $app['dir_blog'] . '/author.yml';
 
 if(file_exists($app['dir_blog'])) 
 {
-	define('CONFIG', $app['dir_blog'] . '/config.yml');
-	define('AUTHOR', $app['dir_blog'] . '/author.yml');
-	$app['config'] = Yaml::parse(file_get_contents(CONFIG));
+	$config_url = $app['dir_blog'] . '/config.yml';
+	$app['config'] = Yaml::parse(file_get_contents($config_url));
 
 	/** Authentication & Authorization **/
 
@@ -120,7 +119,11 @@ $app->get('/', function(Request $request) use($app) {
 
 });
 
-$app->match('/install', function(Request $request) use($app, $dumper) {
+$app->match('/install', function(Request $request) use($app, $dumper, $author_url) {
+	if(file_exists($app['dir_blog'])) {
+		return $app->redirect('/login');
+	}
+
 	$app['form'] = array(
 		'name' => '',
 		'email' => '',
@@ -172,7 +175,7 @@ $app->match('/install', function(Request $request) use($app, $dumper) {
 				)
 			);
 
-		file_put_contents(AUTHOR, $dumper->dump($administrator));
+		file_put_contents($author_url, $dumper->dump($administrator));
 		return $app->redirect('/admin/setting/edit');
 	}
 	return $app['twig']->render('install.twig', $app['data']);
@@ -180,7 +183,7 @@ $app->match('/install', function(Request $request) use($app, $dumper) {
 
 /** Login **/
 $app->get('/login', function(Request $request) use($app) {
-	if(!file_exists(realpath(dirname(__DIR__) .  '/blog'))) 
+	if(!file_exists($app['dir_blog'])) 
 		return $app->redirect('/install');
 
 	return $app['twig']->render('login.twig', array(
@@ -416,7 +419,7 @@ $app->get('/admin/authors/new', function(Request $request) use($app) {
 	return $app['twig']->render('author_form.twig', $app['data']);
 });
 
-$app->post('/admin/authors', function(Request $request) use($app, $authors, $dumper) {
+$app->post('/admin/authors', function(Request $request) use($app, $authors, $dumper, $author_url) {
 	$app['form'] = array(
 		'name' => $request->request->get('name'),
 		'email' => $request->request->get('email'),
@@ -463,7 +466,7 @@ $app->post('/admin/authors', function(Request $request) use($app, $authors, $dum
 		'password' => $app['form']['password']
 		);
 
-	file_put_contents(AUTHOR, $dumper->dump($authors));
+	file_put_contents($author_url, $dumper->dump($authors));
 	return $app->redirect('/admin/authors');
 });
 
@@ -482,9 +485,9 @@ $app->match('/admin/author/{username}/edit', function(Request $request, $usernam
 	return $app['twig']->render('author_form.twig', $app['data']);
 });
 
-$app->get('/admin/author/{username}/delete', function(Request $request, $username) use($app, $authors) {
+$app->get('/admin/author/{username}/delete', function(Request $request, $username) use($app, $authors, $author_url) {
 	unset($authors[$username]);
-	file_put_contents(AUTHOR, $dumper->dump($authors));
+	file_put_contents($author_url, $dumper->dump($authors));
 	return $app->redirect('/admin/authors');
 });
 
@@ -493,7 +496,7 @@ $app->get('/admin/author/{username}/delete', function(Request $request, $usernam
 
 /** UPDATE SETTING **/
 
-$app->match('/admin/setting/edit', function(Request $request) use($app, $dumper) {
+$app->match('/admin/setting/edit', function(Request $request) use($app, $dumper, $config_url) {
 	$app['paginations'] = array('5', '10', '15', '20');
 	$app['form'] = array(
 		'title' => $app['config']['config']['title'],
@@ -525,7 +528,7 @@ $app->match('/admin/setting/edit', function(Request $request) use($app, $dumper)
 		'tagline' => $app['form']['tagline'],
 		'pagination' => $app['form']['pagination']
 		);
-	file_put_contents(CONFIG, $dumper->dump($app['config']));
+	file_put_contents($config_url, $dumper->dump($app['config']));
 	return $app['twig']->render('setting.twig', $app['data']);
 });
 
