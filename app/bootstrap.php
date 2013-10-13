@@ -37,7 +37,8 @@ $app->register(new SessionServiceProvider());
 
 /** Basic Configuration **/
 
-$app['dir_blog'] = realpath(dirname(__DIR__) .  '/public/blog');
+$app['dir_blog'] = realpath(dirname(__DIR__)) .  '/public/blog';
+
 $authors = array();
 $authors_parse = array();
 $dumper = new Dumper();
@@ -120,6 +121,7 @@ $app->get('/', function(Request $request) use($app) {
 });
 
 $app->match('/install', function(Request $request) use($app, $dumper, $author_url) {
+
 	if(file_exists($app['dir_blog'])) {
 		return $app->redirect('/login');
 	}
@@ -143,7 +145,7 @@ $app->match('/install', function(Request $request) use($app, $dumper, $author_ur
 
 		$constraint = new Assert\Collection(array(
 			'name' => new Assert\NotBlank(),
-			'email' => new Assert\NotBlank(),
+			'email' => array(new Assert\NotBlank(), new Assert\Email()),
 			'username' => new Assert\NotBlank(),
 			'password' => new Assert\NotBlank(),
 			'password_confirmation' => new Assert\NotBlank()
@@ -175,7 +177,7 @@ $app->match('/install', function(Request $request) use($app, $dumper, $author_ur
 				)
 			);
 
-		file_put_contents($author_url, $dumper->dump($administrator));
+		file_put_contents($author_url , $dumper->dump($administrator, 2));
 		return $app->redirect('/admin/setting/edit');
 	}
 	return $app['twig']->render('install.twig', $app['data']);
