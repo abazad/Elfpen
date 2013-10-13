@@ -11,7 +11,7 @@
       <div class="span12">
         <form class="form-horizontal" method="post" action="/admin/authors">
           <fieldset>
-            <legend>New Author</legend>
+            <legend>{{ app.form_title }}</legend>
             {% if app.errors is defined %}
             <div class="alert alert-error">
               <button class="close" data-dismiss="alert">&times;</button>
@@ -46,6 +46,13 @@
               </div>
             </div>
             <div class="control-group">
+              <label class="control-label" for="email">Role </label>
+              <div class="controls">
+                <input type="text" class="span6" name="role" readonly="readonly" value="{{ app.form.role }}">
+                <p class="help-block">Email must be valid with right format </p>
+              </div>
+            </div>
+            <div class="control-group">
               <label class="control-label" for="signature">Signature </label>
               <div class="controls">
                 <textarea class="input-xlarge textarea" placeholder="Enter Signature ..." style="width: 600px; height: 200px" name="signature">{{ app.form.signature }}</textarea>
@@ -72,14 +79,15 @@
             <div class="control-group">
               <label class="control-label" for="username">Username* </label>
               <div class="controls">
-                {% set disabled = null %}
+                {% set readonly = null %}
                 {% if app.form.username is not empty %}
-                {% set disabled = 'disabled' %}
+                {% set readonly = 'readonly' %}
                 {% endif %}
-                <input type="text" class="span6" name="username" value="{{ app.form.username }}" {{ disabled }}>
+                <input type="text" class="span6" name="username" value="{{ app.form.username }}" {{ readonly }}>
                 <p class="help-block">Author's username. Used for login</p>
               </div>
             </div>
+            {% if app.form_title == 'New Author' %}
             <div class="control-group">
               <label class="control-label" for="password">Password* </label>
               <div class="controls">
@@ -94,9 +102,15 @@
                 <p class="help-block">Fill with the same value with password field</p>
               </div>
             </div>
+            {% endif %}
+            {% if app.form_title == 'Update Author' %}
+              <input type="hidden" class="span6" name="form_title" value="{{ app.form_title }}">
+              <input type="hidden" class="span6" name="password" value="{{ app.form.password }}">
+              <input type="hidden" class="span6" name="password_confirmation" value="{{ app.form.password }}">
+            {% endif %}
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">Save</button>
-              <button type="reset" class="btn">Cancel</button>
+              <a href="/admin/authors" class="btn">Cancel</a>
             </div>
           </fieldset>
         </form>

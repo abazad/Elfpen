@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Dumper;
+use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
@@ -68,6 +69,10 @@ if(file_exists($app['dir_blog']))
 		$authors_parse[$key] = array($value['role'], $value['password']);
 	}
 }
+
+$app['security.encoder.digest'] = $app->share(function ($app) {
+		return new MessageDigestPasswordEncoder('sha1', false, 1);
+});
 
 $app['security.firewalls'] = array(
 	'admin' => array(
@@ -168,7 +173,7 @@ $app->match('/install', function(Request $request) use($app, $dumper, $author_ur
 				'name' => $app['form']['name'],
 				'email' => $app['form']['email'],
 				'username' => $app['form']['username'],
-				'password' => $app['form']['password'],
+				'password' => sha1($app['form']['password']),
 				'signature' => 'Your signature',
 				'facebook' => 'Your facebook account',
 				'twitter' => 'Your twitter account',
@@ -223,6 +228,7 @@ $app->get('/admin/posts', function(Request $request) use($app) {
 });
 
 $app->get('/admin/posts/new', function(Request $request) use($app) {
+	$app['form_title'] = 'New Post';
 	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
 	$app['post_categories'] = array();
 	$app['form'] = array(
@@ -235,6 +241,7 @@ $app->get('/admin/posts/new', function(Request $request) use($app) {
 });
 
 $app->post('/admin/posts', function(Request $request) use($app) {
+	$app['form_title'] = $request->request->get('form_title');
 	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
 	$app['post_categories'] = array();
 
@@ -290,6 +297,7 @@ $app->get('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
 	// id is filename, unique property of Post
 	$posts = TolkienFacade::build($app['dir_blog'], 'post');
 	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
+	$app['form_title'] = 'Update Post';
 
 	foreach ($posts as $post) {
 		if($post->getFileName() == $id) {
@@ -409,9 +417,11 @@ $app->get('/admin/authors', function(Request $request) use($app, $authors) {
 });
 
 $app->get('/admin/authors/new', function(Request $request) use($app) {
+	$app['form_title'] = "New Author";
 	$app['form'] = array(
 		'name' => '',
 		'email' => '',
+		'role' => 'author',
 		'signature' => '',
 		'facebook' => '',
 		'twitter' => '',
@@ -422,9 +432,11 @@ $app->get('/admin/authors/new', function(Request $request) use($app) {
 });
 
 $app->post('/admin/authors', function(Request $request) use($app, $authors, $dumper, $author_url) {
+	$app['form_title'] = $request->request->get('form_title');
 	$app['form'] = array(
 		'name' => $request->request->get('name'),
 		'email' => $request->request->get('email'),
+		'role' => $request->request->get('role'),
 		'signature' => $request->request->get('signature'),
 		'facebook' => $request->request->get('facebook'),
 		'twitter' => $request->request->get('twitter'),
@@ -437,6 +449,7 @@ $app->post('/admin/authors', function(Request $request) use($app, $authors, $dum
 	$constraint = new Assert\Collection(array(
 		'name' => new Assert\NotBlank(),
 		'email' => new Assert\Email(),
+		'role' => new Assert\NotBlank(),
 		'signature' => array(),
 		'facebook' => array(),
 		'twitter' => array(),
@@ -460,36 +473,43 @@ $app->post('/admin/authors', function(Request $request) use($app, $authors, $dum
 	$authors[$app['form']['username']] = array(
 		'name' => $app['form']['name'],
 		'email' => $app['form']['email'],
+		'role' => $app['form']['role'],
 		'signature' => $app['form']['signature'],
 		'facebook' => $app['form']['facebook'],
 		'twitter' => $app['form']['twitter'],
 		'github' => $app['form']['github'],
-		'username' => $app['form']['username'],
-		'password' => $app['form']['password']
+		'username' => $app['form']['username']
 		);
 
-	file_put_contents($author_url, $dumper->dump($authors));
+	if($app['form_title'] == 'New Author')
+		$authors[$app['form']['username']]['password'] = sha1($app['form']['password']);
+	else
+		$authors[$app['form']['username']]['password'] = $app['form']['password'];
+
+	file_put_contents($author_url, $dumper->dump($authors, 2));
 	return $app->redirect('/admin/authors');
 });
 
 $app->match('/admin/author/{username}/edit', function(Request $request, $username) use($app, $authors) {
+	$app['form_title'] = "Update Author";
 	$author = $authors[$username];
-
 	$app['form'] = array(
 		'name' => $author['name'],
 		'email' => $author['email'],
+		'role' => $author['role'],
 		'signature' => $author['signature'],
 		'facebook' => $author['facebook'],
 		'twitter' => $author['twitter'],
 		'github' => $author['github'],
-		'username' => $username
+		'username' => $username,
+		'password' => $author['password']
 		);
 	return $app['twig']->render('author_form.twig', $app['data']);
 });
 
-$app->get('/admin/author/{username}/delete', function(Request $request, $username) use($app, $authors, $author_url) {
+$app->get('/admin/author/{username}/delete', function(Request $request, $username) use($app, $authors, $author_url, $dumper) {
 	unset($authors[$username]);
-	file_put_contents($author_url, $dumper->dump($authors));
+	file_put_contents($author_url, $dumper->dump($authors, 2));
 	return $app->redirect('/admin/authors');
 });
 
@@ -530,7 +550,7 @@ $app->match('/admin/setting/edit', function(Request $request) use($app, $dumper,
 		'tagline' => $app['form']['tagline'],
 		'pagination' => $app['form']['pagination']
 		);
-	file_put_contents($config_url, $dumper->dump($app['config']));
+	file_put_contents($config_url, $dumper->dump($app['config'], 2));
 	return $app['twig']->render('setting.twig', $app['data']);
 });
 

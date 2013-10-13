@@ -22,9 +22,9 @@
           <tbody>
             {% for key, author in app.authors %}
             <tr class="odd gradeX">
-              <td><a href="#">{{ author.name }}</a></td>
-              <td>Administrator</td>
-              <td><a href="#">{{ author.email }}</a></td>
+              <td><a href="/admin/author/{{ key }}/edit">{{ author.name }}</a></td>
+              <td>{{ author.role }}</td>
+              <td><a href="mailto:{{author.email}}">{{ author.email }}</a></td>
               <td>
                 <a href="/admin/author/{{ key }}/edit" class="label label-info">edit</a>
                 <a href="/admin/author/{{ key }}/delete" class="label label-important">delete</a>
