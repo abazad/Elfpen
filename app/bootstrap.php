@@ -559,4 +559,47 @@ $app->match('/admin/setting/edit', function(Request $request) use($app, $dumper,
 
 /** END OF SETTING **/
 
+/** ASSET Manager **/
+$app->get('/admin/assets', function(Request $request) use($app) {
+	$assets = TolkienFacade::build($app['dir_blog'], 'asset');
+	$arrAssets = array();
+	foreach ($assets as $asset) {
+		$arrAssets[] = array(
+			'url' => $asset->getUrl(),
+			'ext' => array_pop(explode('.', basename($asset->getUrl())))
+			);
+	}
+
+	$app['ext_editable'] = array('css', 'js');
+	$app['assets'] = $arrAssets;
+	return $app['twig']->render('assets.twig', $app['data']);
+});
+
+$app->get('/admin/assets/new', function(Request $request) use($app) {
+
+});
+
+$app->post('/admin/assets', function(Request $request) use($app) {
+
+});
+
+$app->get('/admin/asset/{path}/edit', function(Request $request, $path) use($app) {
+
+});
+
+$app->get('/admin/asset/{path}', function(Request $request, $path) use($app) {
+
+});
+
+$app->get('/admin/asset/{path}/delete', function(Request $request, $path) use($app) {
+});
+
+$app->get('/admin/site', function(Request $request) use($app) {
+
+});
+
+$app->get('/admin/site/compile', function(Request $request) use($app) {
+
+});
+
 $app->run();
