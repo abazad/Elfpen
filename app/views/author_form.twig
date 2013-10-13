@@ -103,14 +103,14 @@
               </div>
             </div>
             {% endif %}
-            {% if app.form_title == 'Update Author' %}
-              <input type="hidden" class="span6" name="form_title" value="{{ app.form_title }}">
-              <input type="hidden" class="span6" name="password" value="{{ app.form.password }}">
-              <input type="hidden" class="span6" name="password_confirmation" value="{{ app.form.password }}">
-            {% endif %}
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">Save</button>
               <a href="/admin/authors" class="btn">Cancel</a>
+              <input type="hidden" class="span6" name="form_title" value="{{ app.form_title }}">
+              {% if app.form_title == 'Update Author' %}
+                <input type="hidden" class="span6" name="password" value="{{ app.form.password }}">
+                <input type="hidden" class="span6" name="password_confirmation" value="{{ app.form.password }}">
+              {% endif %}
             </div>
           </fieldset>
         </form>

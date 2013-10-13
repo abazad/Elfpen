@@ -49,7 +49,7 @@ $dumper = new Dumper();
 /* Data & callback */
 $app['data'] = array(
 	'title' => 'Elf-Pen - Default Admin Panel for Tolkien',
-	'footer' => '&copy; 2013, Glend Maatita 2013'
+	'footer' => 'Copyright © 2013, KodeTalk ®'
 );
 
 $config_url = '';
@@ -464,6 +464,7 @@ $app->post('/admin/authors', function(Request $request) use($app, $authors, $dum
 	}
 	// dammit, cant find simple validation for this
 	else if($app['form']['password'] != $app['form']['password_confirmation']) {
+		unset($app['errors']);
 		$app['error_confirm'] = "Password and Confirmed Password doesn't match";
 		return $app['twig']->render('author_form.twig', $app['data']);		
 	}
@@ -489,7 +490,7 @@ $app->post('/admin/authors', function(Request $request) use($app, $authors, $dum
 	return $app->redirect('/admin/authors');
 });
 
-$app->match('/admin/author/{username}/edit', function(Request $request, $username) use($app, $authors) {
+$app->get('/admin/author/{username}/edit', function(Request $request, $username) use($app, $authors) {
 	$app['form_title'] = "Update Author";
 	$author = $authors[$username];
 	$app['form'] = array(
