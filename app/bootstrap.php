@@ -119,10 +119,6 @@ $app['debug'] = true;
  * +--------------------------+------------------------------+-----------------------------+
  */
 
-$app->get('/', function(Request $request) use($app) {
-
-});
-
 $app->match('/install', function(Request $request) use($app, $dumper, $author_url) {
 
 	if(file_exists($app['dir_blog'])) {
@@ -543,14 +539,21 @@ $app->match('/admin/setting/edit', function(Request $request) use($app, $dumper,
 		if(count($app['errors']) > 0) {
 			return $app['twig']->render('setting.twig', $app['data']);	
 		}
+		else {
+			unset($app['errors']);
+			$app['success'] = 'Setting has been succesfully updated';
+		}
+		
+		$config = array(
+			'config' => array(
+				'title' => $app['form']['title'],
+				'tagline' => $app['form']['tagline'],
+				'pagination' => $app['form']['pagination']
+				),
+			'dir' => $app['config']['dir']
+			);
+		file_put_contents($config_url, $dumper->dump($config, 2));
 	}
-
-	$app['config']['config'] = array(
-		'title' => $app['form']['title'],
-		'tagline' => $app['form']['tagline'],
-		'pagination' => $app['form']['pagination']
-		);
-	file_put_contents($config_url, $dumper->dump($app['config'], 2));
 	return $app['twig']->render('setting.twig', $app['data']);
 });
 
