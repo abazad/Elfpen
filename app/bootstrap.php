@@ -2,6 +2,7 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+/** Using Composer package **/
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -15,10 +16,10 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\SessionServiceProvider;
-
 /** Tolkien Namespace **/
 use Tolkien\Facades\Tolkien as TolkienFacade;
 use Tolkien\Init;
+/** End of Composer Package List **/
 
 /* Initialiaze */
 $app = new  Silex\Application();
@@ -27,7 +28,7 @@ $app = new  Silex\Application();
 $app->register(new TwigServiceProvider(), array(
 	'twig.path' => __DIR__.'/views',
 ));
-//$app->register(new FormServiceProvider());
+
 $app->register(new TranslationServiceProvider(), array(
     'locale_fallbacks' => array('en'),
 ));
@@ -35,23 +36,21 @@ $app->register(new ValidatorServiceProvider());
 $app->register(new SecurityServiceProvider());
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new SessionServiceProvider());
+/** End Of Service Provide **/
 
 /** Basic Configuration **/
-
 $app['dir_blog'] = realpath(dirname(__DIR__)) .  '/public/blog';
 
 $authors = array();
 $authors_parse = array();
 $dumper = new Dumper();
+/** End of Configuration **/
 
 /* Data & callback */
-
 $app['data'] = array(
 	'title' => 'Elf-Pen - Default Admin Panel for Tolkien',
 	'footer' => '&copy; 2013, Glend Maatita 2013'
 );
-
-/** end of data **/
 
 $config_url = '';
 $author_url = $app['dir_blog'] . '/author.yml';
@@ -61,15 +60,15 @@ if(file_exists($app['dir_blog']))
 	$config_url = $app['dir_blog'] . '/config.yml';
 	$app['config'] = Yaml::parse(file_get_contents($config_url));
 
-	/** Authentication & Authorization **/
-
 	$authors = Yaml::parse(file_get_contents($app['dir_blog'] . '/author.yml'));
 	$authors_parse = array();
 	foreach ($authors as $key => $value) {
 		$authors_parse[$key] = array($value['role'], $value['password']);
 	}
 }
+/** end of Data **/
 
+/** Authentication & Authorization **/
 $app['security.encoder.digest'] = $app->share(function ($app) {
 		return new MessageDigestPasswordEncoder('sha1', false, 1);
 });
@@ -85,7 +84,6 @@ $app['security.firewalls'] = array(
 		'users' => $authors_parse
 		)
 	);
-
 /** End of authentication **/
 	
 $app['debug'] = true;
@@ -267,11 +265,11 @@ $app->post('/admin/posts', function(Request $request) use($app) {
 	}
 
 	$author = $app['session']->get('author');
-	$categories = explode(',', implode(',', $app['form']['categories']) . ',' . $app['form']['other_categories']);
+	$categories = array_filter( explode(',', implode(',', $app['form']['categories']) . ',' . $app['form']['other_categories']) );
 
 	// indicates that form is from edit form
 	if($app['form']['file'] != '') {
-		unlink($app['form']['file']);
+		unlink($app['config']['dir']['post'] . '/' . $app['form']['file']);
 	}
 
 	TolkienFacade::generate($app['dir_blog'], array(
@@ -297,17 +295,23 @@ $app->get('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
 	// id is filename, unique property of Post
 	$posts = TolkienFacade::build($app['dir_blog'], 'post');
 	$app['categories'] = TolkienFacade::build($app['dir_blog'], 'site_category');
-	$app['form_title'] = 'Update Post';
+	$app['form_title'] = 'Update Post';	
 
 	foreach ($posts as $post) {
 		if($post->getFileName() == $id) {
+			$markdown = new \HTML_To_Markdown($post->getBody());
+			$post_categories = array();
+
 			$app['form'] = array(
 				'title' => $post->getTitle(),
-				'body' => $post->getBody(),
+				'body' => $markdown->output(),
 				'other_categories' => '',
 				'file' => $post->getFile()
 				);
-			$app['post_categories'] = explode(',', $post->getCategories());
+			foreach ($post->getCategories() as $category) {
+				$post_categories[] = $category->getName();
+			}
+			$app['post_categories'] = $post_categories;
 			break;
 		}		
 	}
@@ -315,7 +319,7 @@ $app->get('/admin/post/{id}/edit', function(Request $request, $id) use($app) {
 });
 
 $app->get('/admin/post/{file}/delete', function(Request $request, $file) use($app) {
-	if(unlink($file)) 
+	if(unlink($app['config']['dir']['post'] . '/' . $file)) 
 		$app['notification'] = "A post has been succesfully deleted";
 	else 
 		$app['notification'] = "Error when deleted a post";
@@ -334,6 +338,7 @@ $app->get('/admin/pages', function(Request $request) use($app) {
 });
 
 $app->get('/admin/pages/new', function(Request $request) use($app) {
+	$app['form_title'] = 'New Page';
 	$app['form'] = array(
 		'title' => '',
 		'body' => '',
@@ -360,8 +365,8 @@ $app->post('/admin/pages', function(Request $request) use($app) {
 		return $app['twig']->render('page_form.twig', $app['data']);	
 	}
 
-	if($app['form']['file']) {
-		unlink($app['form']['file']);
+	if($app['form']['file'] != '') {
+		unlink($app['config']['dir']['page'] . '/' . $app['form']['file']);
 	}
 
 	TolkienFacade::generate($app['dir_blog'], array(
@@ -374,13 +379,16 @@ $app->post('/admin/pages', function(Request $request) use($app) {
 	return $app->redirect('/admin/pages');
 });
 
-$app->get('/admin/page/{id}/edit', function(Request $request, $id) use($app) {
+$app->get('/admin/page/{file}/edit', function(Request $request, $file) use($app) {
+	$app['form_title'] = 'Update Page';
 	$pages = TolkienFacade::build($app['dir_blog'], 'page');
 	foreach ($pages as $page) {
-		if($page->getFileName() == $id) {
+		if($page->getFileName() == $file) {
+			$markdown = new \HTML_To_Markdown($page->getBody());
 			$app['form'] = array(
 				'title' => $page->getTitle(),
-				'body' => $page->getBody()
+				'body' => $markdown->output(),
+				'file' => $page->getFile()
 				);
 			break;
 		}
@@ -388,17 +396,8 @@ $app->get('/admin/page/{id}/edit', function(Request $request, $id) use($app) {
 	return $app['twig']->render('page_form.twig', $app['data']);
 });
 
-$app->post('admin/page/{file}', function(Request $request, $file) use($app) {
-	if(unlink($file)) 
-		$app['notification'] = "A page has been succesfully deleted";
-	else 
-		$app['notification'] = "Error when deleted a page";
-
-	return $app->redirect('/admin/pages');
-});
-
 $app->get('/admin/page/{file}/delete', function(Request $request, $file) use($app) {
-	if(unlink($file)) 
+	if(unlink($app['config']['dir']['page'] . '/' . $file)) 
 		$app['notification'] = "A page has been succesfully deleted";
 	else 
 		$app['notification'] = "Error when deleted a page";

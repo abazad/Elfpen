@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5d8ce5abc5d226ea79e24ee99ea99de6",
+    "hash": "98589101fdd03e8095d5bb6980fee107",
     "packages": [
         {
             "name": "michelf/php-markdown",
@@ -55,6 +55,52 @@
                 "markdown"
             ],
             "time": "2013-04-11 18:53:11"
+        },
+        {
+            "name": "nickcernis/html-to-markdown",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nickcernis/html-to-markdown.git",
+                "reference": "daa1235b0d3053e3190480fa5eadabc8893f36e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nickcernis/html-to-markdown/zipball/daa1235b0d3053e3190480fa5eadabc8893f36e9",
+                "reference": "daa1235b0d3053e3190480fa5eadabc8893f36e9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "require-dev": {
+                "php": ">=5.3.3",
+                "phpunit/phpunit": "3.7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "HTML_To_Markdown.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nick Cernis",
+                    "email": "nick@cern.is",
+                    "homepage": "http://modernnerd.net"
+                }
+            ],
+            "description": "An HTML-to-markdown conversion helper for PHP",
+            "homepage": "https://github.com/nickcernis/html-to-markdown",
+            "keywords": [
+                "html",
+                "markdown"
+            ],
+            "time": "2013-10-12 22:57:45"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1451,12 +1497,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/glendmaatita/Tolkien.git",
-                "reference": "449d472e9328c8b112fffe2e15260fa0c042bcf1"
+                "reference": "ce039fbad4cac3cb8525dd9c4aa99982ed33cbf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glendmaatita/Tolkien/zipball/449d472e9328c8b112fffe2e15260fa0c042bcf1",
-                "reference": "449d472e9328c8b112fffe2e15260fa0c042bcf1",
+                "url": "https://api.github.com/repos/glendmaatita/Tolkien/zipball/ce039fbad4cac3cb8525dd9c4aa99982ed33cbf2",
+                "reference": "ce039fbad4cac3cb8525dd9c4aa99982ed33cbf2",
                 "shasum": ""
             },
             "require": {
@@ -1485,10 +1531,10 @@
             ],
             "description": "Simple Blogging Engine inspired by Jekyll",
             "support": {
-                "source": "https://github.com/glendmaatita/Tolkien/tree/elfbranch",
+                "source": "https://github.com/glendmaatita/Tolkien/tree/v0.5.3",
                 "issues": "https://github.com/glendmaatita/Tolkien/issues"
             },
-            "time": "2013-10-11 11:55:12"
+            "time": "2013-10-13 02:02:33"
         },
         {
             "name": "twig/twig",
@@ -1548,7 +1594,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "tolkien/tolkien": 20
+        "tolkien/tolkien": 20,
+        "nickcernis/html-to-markdown": 20
     },
     "platform": [
 
