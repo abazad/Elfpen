@@ -565,8 +565,8 @@ $app->get('/admin/assets', function(Request $request) use($app) {
 	$arrAssets = array();
 	foreach ($assets as $asset) {
 		$arrAssets[] = array(
-			'url' => $asset->getUrl(),
-			'ext' => array_pop(explode('.', basename($asset->getUrl())))
+			'path' => $asset->getPath(),
+			'ext' => array_pop(explode('.', basename($asset->getPath())))
 			);
 	}
 
@@ -576,22 +576,87 @@ $app->get('/admin/assets', function(Request $request) use($app) {
 });
 
 $app->get('/admin/assets/new', function(Request $request) use($app) {
-
+	$app['form_title'] = "Upload Asset";
+	$app['form'] = array(
+		'asset' => ''
+		);
+	return $app['twig']->render('asset_form.twig', $app['data']);
 });
 
 $app->post('/admin/assets', function(Request $request) use($app) {
+	$app['form_title'] = 'Upload Asset';
+	$app['form'] = array(
+		'asset' => $request->request->get('asset')
+		);
+	
+	$files = $request->files->get('asset');
+	$path = $app['dir_blog'] . '/_assets/';
 
+	if(isset($files))
+	{
+		$filename = $files->getClientOriginalName();
+		switch ( array_pop(explode('.', $filename)) ) {
+			case 'js':
+				$path .= 'js/';
+				break;
+			case 'css':
+				$path .= 'css/';
+				break;
+			case 'jpg':
+				$path .= 'images/';
+				break;
+			case 'jpeg':
+				$path .= 'images/';
+				break;
+			case 'png':
+				$path .= 'images/';
+				break;
+			case 'gif':
+				$path .= 'images/';
+				break;			
+			default:
+				$path .= 'other/';
+				break;
+		}
+
+		if (!is_dir($path))
+			mkdir($path);
+
+		$files->move($path, $filename);
+		return $app->redirect('/admin/assets');
+	}
+	else {
+		$app['errors'] = array(
+			'error' => array(
+				'propertyPath' => 'Asset',
+				'message' => 'Upload Failed',
+				)
+			);
+		return $app['twig']->render('asset_form.twig', $app['data']);
+	}
 });
 
 $app->get('/admin/asset/{path}/edit', function(Request $request, $path) use($app) {
-
+	$file = str_replace('&', '/', $path);
+	$app['form'] = array(
+		'content' => file_get_contents($file),
+		'asset' => $file
+		);
+	$app['form_title'] = "Edit Asset";
+	$app['path'] = $path;
+	return $app['twig']->render('asset_edit_form.twig', $app['data']);
 });
 
-$app->get('/admin/asset/{path}', function(Request $request, $path) use($app) {
-
+$app->post('/admin/asset/{path}', function(Request $request, $path) use($app) {
+	$file = str_replace('&', '/', $path);
+	file_put_contents($file, $request->request->get('content'));
+	return $app->redirect('/admin/asset/' . $path . '/edit' );
 });
 
 $app->get('/admin/asset/{path}/delete', function(Request $request, $path) use($app) {
+	$path = str_replace('&', '/', $path);
+	unlink($path);
+	return $app->redirect('/admin/assets');
 });
 
 $app->get('/admin/site', function(Request $request) use($app) {

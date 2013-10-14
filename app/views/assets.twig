@@ -6,7 +6,7 @@
   <!-- block -->
   <div class="block">
     <div class="navbar navbar-inner block-header">
-      <div class="muted pull-left">All Pages - <a class="label label-inverse" href="/admin/assets/new">New Asset</a></div>
+      <div class="muted pull-left">All Assets - <a class="label label-inverse" href="/admin/assets/new">New Asset</a></div>
     </div>
     <div class="block-content collapse in">
       <div class="span12">                  
@@ -21,13 +21,15 @@
           <tbody>
             {% for asset in app.assets %}
             <tr class="odd gradeX">
-              <td><a href="#"><a href="#">{{ asset.url }}</a></a></td>
+              <td><a href="#"><a href="#">{{ asset.path }}</a></a></td>
               <td><a href="#"><a href="#">{{ asset.ext }}</a></a></td>
               <td>
               {% if asset.ext in app.ext_editable  %}
-                <a href="/admin/asset/{{ asset.url }}/edit" class="label label-info">edit</a>
+                <a href="/admin/asset/{{ asset.path | replace({'/': '&'}) }}/edit" class="label label-info">edit</a>
+              {% else %}
+                <a href="/admin/asset/{{ asset.path | replace({'/': '&'}) }}/view" class="label label-warning">view</a>
               {% endif %}
-                <a href="/admin/asset/{{ asset.url }}/delete" class="label label-important">delete</a>
+                <a href="/admin/asset/{{ asset.path | replace({'/': '&'}) }}/delete" class="label label-important">delete</a>
               </td>
             </tr>
             {% endfor %}
