@@ -644,6 +644,11 @@ $app->get('/admin/asset/{path}/edit', function(Request $request, $path) use($app
 		);
 	$app['form_title'] = "Edit Asset";
 	$app['path'] = $path;
+	$app['file'] = '/' . $file;
+	$app['editable'] = false;
+	if( in_array( array_pop(explode('.', basename($file))), array('css', 'js') ) )
+		$app['editable'] = true;
+
 	return $app['twig']->render('asset_edit_form.twig', $app['data']);
 });
 

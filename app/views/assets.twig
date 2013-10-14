@@ -24,11 +24,7 @@
               <td><a href="#"><a href="#">{{ asset.path }}</a></a></td>
               <td><a href="#"><a href="#">{{ asset.ext }}</a></a></td>
               <td>
-              {% if asset.ext in app.ext_editable  %}
                 <a href="/admin/asset/{{ asset.path | replace({'/': '&'}) }}/edit" class="label label-info">edit</a>
-              {% else %}
-                <a href="/admin/asset/{{ asset.path | replace({'/': '&'}) }}/view" class="label label-warning">view</a>
-              {% endif %}
                 <a href="/admin/asset/{{ asset.path | replace({'/': '&'}) }}/delete" class="label label-important">delete</a>
               </td>
             </tr>
