@@ -570,7 +570,7 @@ $app->get('/admin/assets', function(Request $request) use($app) {
 			);
 	}
 
-	$app['ext_editable'] = array('css', 'js');
+	$app['ext_editable'] = array('css', 'js', 'txt');
 	$app['assets'] = $arrAssets;
 	return $app['twig']->render('assets.twig', $app['data']);
 });
@@ -669,7 +669,8 @@ $app->get('/admin/site', function(Request $request) use($app) {
 });
 
 $app->get('/admin/site/compile', function(Request $request) use($app) {
-
+	TolkienFacade::compile($app['dir_blog']);
+	return $app->redirect('/admin/site');
 });
 
 $app->run();
