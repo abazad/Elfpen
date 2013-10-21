@@ -62,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nickcernis/html-to-markdown.git",
-                "reference": "daa1235b0d3053e3190480fa5eadabc8893f36e9"
+                "reference": "e7671ed28208f4b262b7b2bfc2e7223408ca894e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nickcernis/html-to-markdown/zipball/daa1235b0d3053e3190480fa5eadabc8893f36e9",
-                "reference": "daa1235b0d3053e3190480fa5eadabc8893f36e9",
+                "url": "https://api.github.com/repos/nickcernis/html-to-markdown/zipball/e7671ed28208f4b262b7b2bfc2e7223408ca894e",
+                "reference": "e7671ed28208f4b262b7b2bfc2e7223408ca894e",
                 "shasum": ""
             },
             "require": {
@@ -100,7 +100,7 @@
                 "html",
                 "markdown"
             ],
-            "time": "2013-10-12 22:57:45"
+            "time": "2013-10-19 17:48:44"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -348,16 +348,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "3.7.27",
+            "version": "3.7.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "4b024e753e3421837afbcca962c8724c58b39376"
+                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4b024e753e3421837afbcca962c8724c58b39376",
-                "reference": "4b024e753e3421837afbcca962c8724c58b39376",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
+                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
                 "shasum": ""
             },
             "require": {
@@ -418,7 +418,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2013-09-16 03:09:52"
+            "time": "2013-10-17 07:27:40"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1497,12 +1497,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/glendmaatita/Tolkien.git",
-                "reference": "ce039fbad4cac3cb8525dd9c4aa99982ed33cbf2"
+                "reference": "5511e835ce654f7b59cf82b1258745e0644fc874"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glendmaatita/Tolkien/zipball/ce039fbad4cac3cb8525dd9c4aa99982ed33cbf2",
-                "reference": "ce039fbad4cac3cb8525dd9c4aa99982ed33cbf2",
+                "url": "https://api.github.com/repos/glendmaatita/Tolkien/zipball/5511e835ce654f7b59cf82b1258745e0644fc874",
+                "reference": "5511e835ce654f7b59cf82b1258745e0644fc874",
                 "shasum": ""
             },
             "require": {
@@ -1531,10 +1531,10 @@
             ],
             "description": "Simple Blogging Engine inspired by Jekyll",
             "support": {
-                "source": "https://github.com/glendmaatita/Tolkien/tree/v0.5.3",
+                "source": "https://github.com/glendmaatita/Tolkien/tree/master",
                 "issues": "https://github.com/glendmaatita/Tolkien/issues"
             },
-            "time": "2013-10-13 02:02:33"
+            "time": "2013-10-21 12:33:27"
         },
         {
             "name": "twig/twig",

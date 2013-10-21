@@ -746,10 +746,11 @@ $app->get('/admin/layout/{id}/delete', function(Request $request, $id) use($app)
 });
 
 $app->get('/admin/site', function(Request $request) use($app) {
-
+	$app['site'] = TolkienFacade::build($app['dir_blog'], 'site');
+	return $app['twig']->render('site.twig', $app['data']);
 });
 
-$app->get('/admin/site/compile', function(Request $request) use($app) {
+$app->post('/admin/site/compile', function(Request $request) use($app) {
 	TolkienFacade::compile($app['dir_blog']);
 	return $app->redirect('/admin/site');
 });

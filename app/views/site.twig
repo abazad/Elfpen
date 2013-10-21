@@ -1,0 +1,38 @@
+{% extends "layouts/application.tpl.twig" %}
+
+{% block content %}
+<div class="block">
+  <div class="navbar navbar-inner block-header">
+    <div class="muted pull-left">Site Info</div>
+  </div>
+  <div class="block-content collapse in">
+    <div class="span12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Node</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="/admin/posts">Post</a></td>
+            <td>{{ app.site.posts | length }}</td>
+          </tr>
+          <tr>
+            <td><a href="/admin/pages">Page</a></td>
+            <td>{{ app.site.pages | length }}</td>
+          </tr>
+          <tr>
+            <td>Category</td>
+            <td>{{ app.site.siteCategories | length }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<form class="form-horizontal" action="/admin/site/compile" method="post">
+<button type="submit" class="btn btn-primary">Generate <strong>Static</strong> Website!!</button>
+</form>
+{% endblock %}
