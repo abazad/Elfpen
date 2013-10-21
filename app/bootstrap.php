@@ -88,6 +88,7 @@ $app['security.firewalls'] = array(
 	
 $app['debug'] = true;
 
+
 /**
  * Routes
  *
@@ -662,6 +663,86 @@ $app->get('/admin/asset/{path}/delete', function(Request $request, $path) use($a
 	$path = str_replace('&', '/', $path);
 	unlink($path);
 	return $app->redirect('/admin/assets');
+});
+
+$app->get('/admin/layouts', function(Request $request) use($app) {
+	$root = array_reverse(scandir($app['config']['dir']['layout']));
+	$layouts = array();
+	foreach($root as $value)
+	{
+		if($value === '.' || $value === '..')
+			continue;
+
+		if(is_file($app['config']['dir']['layout'] . '/' . $value))
+			$layouts[] = $value;
+	}
+	$app['layouts'] = $layouts;
+	return $app['twig']->render('layouts.twig', $app['data']);
+});
+
+$app->get('/admin/layouts/new', function(Request $request) use($app) {
+	$app['form_title'] = "New Layout";
+	$app['form'] = array(
+		'name' => '',
+		'content' => ''
+		);
+	return $app['twig']->render('layout_form.twig', $app['data']);
+});
+
+$app->post('/admin/layouts', function(Request $request) use($app) {
+	$app['form_title'] = $request->request->get('form_title');
+
+	$app['form'] = array(
+		'name' => $request->request->get('name'),
+		'content' => $request->request->get('content')
+		);
+
+	$constraint = new Assert\Collection(array(
+		'name' => new Assert\NotBlank(),
+		'content' => new Assert\NotBlank()
+		));
+
+	$app['errors'] = $app['validator']->validateValue($app['form'], $constraint);
+	if(count($app['errors']) > 0) {
+		return $app['twig']->render('layout_form.twig', $app['data']);	
+	}
+
+	// indicates that form is from edit form
+	if($app['form']['name'] != '') {
+		unlink($app['config']['dir']['layout'] . '/' . $app['form']['name']);
+	}
+
+	file_put_contents($app['config']['dir']['layout'] . '/' . $app['form']['name'] . '.tpl' , $app['form']['content']);
+	return $app->redirect('/admin/layout/' . $app['form']['name'] . '.tpl/edit');
+});
+
+$app->get('/admin/layout/{id}/edit', function(Request $request, $id) use($app) {
+	$app['form_title'] = "Edit Layout";
+	$name = explode('.', $id);
+	array_pop($name);
+
+	$app['form'] = array(
+		'name' => implode('.', $name),
+		'content' => file_get_contents($app['config']['dir']['layout'] . '/' . $id)
+		);
+	$app['file_name'] = $id;
+	return $app['twig']->render('layout_form.twig', $app['data']);
+});
+
+$app->post('/admin/layout/{id}', function(Request $request, $id) use($app) {
+	$app['form_title'] = $request->request->get('form_title');
+
+	$name = explode('.', $id);
+	array_pop($name);
+
+	file_put_contents($app['config']['dir']['layout'] . '/' . $id , $request->request->get('content'));
+	$app['file_name'] = $id;
+	return $app->redirect('/admin/layout/' . $id . '/edit');
+});
+
+$app->get('/admin/layout/{id}/delete', function(Request $request, $id) use($app) {
+	unlink($app['config']['dir']['layout'] . '/' . $id );
+	return $app->redirect('/admin/layouts');
 });
 
 $app->get('/admin/site', function(Request $request) use($app) {

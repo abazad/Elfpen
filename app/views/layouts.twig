@@ -6,7 +6,7 @@
   <!-- block -->
   <div class="block">
     <div class="navbar navbar-inner block-header">
-      <div class="muted pull-left">All Assets - <a class="label label-inverse" href="/admin/assets/new">New Asset</a></div>
+      <div class="muted pull-left">All Layouts - <a class="label label-inverse" href="/admin/layouts/new">New Layout</a></div>
     </div>
     <div class="block-content collapse in">
       <div class="span12">                  
@@ -14,24 +14,16 @@
           <thead>
             <tr>
               <th>Path</th>
-              <th>Type</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {% for asset in app.assets %}
+            {% for layout in app.layouts %}
             <tr class="odd gradeX">
-              <td><a href="#"><a href="#">{{ asset.path }}</a></a></td>
-              <td><a href="#"><a href="#">{{ asset.ext }}</a></a></td>
+              <td><a href="#">{{ layout }}</a></td>
               <td>
-                <a href="/admin/asset/{{ asset.path | replace({'/': '&'}) }}/edit" class="label label-info">
-                {% if asset.ext in app.ext_editable %}
-                  edit
-                {% else %}
-                  view
-                {% endif %}
-                </a>
-                <a href="/admin/asset/{{ asset.path | replace({'/': '&'}) }}/delete" class="label label-important">delete</a>
+                <a href="/admin/layout/{{ layout | replace({'/': '&'}) }}/edit" class="label label-info">edit</a>
+                <a href="/admin/layout/{{ layout | replace({'/': '&'}) }}/delete" class="label label-important">delete</a>
               </td>
             </tr>
             {% endfor %}
